@@ -50,11 +50,23 @@ export default function UrlInputPanel({ open }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-      if (!res.ok) {
-        throw new Error("Request failed");
-      }
+      
       const data = await res.json().catch(() => ({}));
-      setMessage(data?.status || "Request sent to backend successfully.");
+      
+      if (!res.ok) {
+        // Handle different error types gracefully
+        const errorMessage = data?.error || "Request failed";
+        setError(errorMessage);
+        return;
+      }
+      
+      // Handle successful response
+      if (data?.status === 200 && data?.transcript) {
+        const transcriptCount = data.transcript.length;
+        setMessage(`Successfully fetched transcript with ${transcriptCount} segments. Video ID: ${data.videoId}`);
+      } else {
+        setMessage(data?.message || "Request processed successfully.");
+      }
     } catch (e) {
       setError("Could not reach backend. Please try again.");
     } finally {

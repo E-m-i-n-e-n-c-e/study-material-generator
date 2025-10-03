@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import extractRoutes from './routes/extractRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -9,9 +10,7 @@ app.get('/', (_req: Request, res: Response) => {
   res.send('Backend running');
 });
 
-app.get('/api/hello', (_req: Request, res: Response) => {
-  res.json({ message: 'Hello World from Sarthak' });
-});
+app.use('/api', extractRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
