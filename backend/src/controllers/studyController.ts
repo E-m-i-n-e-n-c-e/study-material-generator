@@ -92,8 +92,6 @@ export async function extractTranscript(req: Request, res: Response) {
     // Merge adjacent segments with total duration < 5 seconds
     const mergedTranscript = mergeShortSegments(result.transcript, 5);
     
-    console.log("Transcript fetched successfully:", result);
-    
     // Return raw transcript to frontend for testing/display
     return res.json({
       status: 200,

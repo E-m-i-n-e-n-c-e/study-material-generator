@@ -1,9 +1,6 @@
 # Fly.io configuration for the backend service
-# Set `app` after `fly launch` or edit it manually once created.
 app = "study-material-backend"
 primary_region = "bom"
-kill_signal = "SIGINT"
-kill_timeout = "5s"
 
 [env]
   # The app uses PORT from the environment; Dockerfile sets PORT=8080
@@ -25,6 +22,5 @@ kill_timeout = "5s"
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
-  memory_mb = 256
+  memory_mb = 512
 
-# If you need TCP services (not typical for Express), use [[services]] instead.
