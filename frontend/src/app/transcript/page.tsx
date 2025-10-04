@@ -2,7 +2,7 @@ import Header from "@/components/Home/Header";
 import Footer from "@/components/Home/Footer";
 import TranscriptViewer from "@/components/Transcript/TranscriptViewer";
 
-export default function TranscriptPage({
+export default async function TranscriptPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
