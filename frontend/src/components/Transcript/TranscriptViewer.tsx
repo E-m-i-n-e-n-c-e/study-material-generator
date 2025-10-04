@@ -131,9 +131,9 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
               onClick={() => setOpenSummary(true)}
               disabled={!segments?.length || !videoId}
               className="inline-flex items-center rounded-md bg-black px-3 py-2 text-white text-sm disabled:opacity-50"
-              title={!segments?.length ? "Load transcript first" : "Generate AI Summary"}
+              title={!segments?.length ? "Load transcript first" : "View AI Summary"}
             >
-              Generate Summary
+              View Summary
             </button>
           </div>
         </div>

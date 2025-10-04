@@ -13,14 +13,12 @@ type Props = {
   language?: string;
 };
 
-export default function SummaryCanvas({ open, onClose, videoId, markdown, language, fetchingSummary = false }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [typed, setTyped] = useState<string>(markdown || "");
+export default function SummaryCanvas({ open, onClose, videoId, markdown, language, fetchingSummary }: Props) {
+  const [typed, setTyped] = useState<string>("");
   const typingIndexRef = useRef(0);
   const typingTimerRef = useRef<number | null>(null);
 
-  const canActions = useMemo(() => !!typed && !loading && !fetchingSummary && !error, [typed, loading, fetchingSummary, error]);
+  const canActions = useMemo(() => !!markdown && !fetchingSummary, [markdown, fetchingSummary]);
 
   // Render HTML from the progressively typed markdown
   const renderedHTML = useMemo(() => {
@@ -32,48 +30,30 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, langua
     }
   }, [typed]);
 
-  // Fetch summary when opened
+  // Typing animation: start as soon as markdown is available (no dependency on canvas visibility)
   useEffect(() => {
-    if (!open) return;
-    let ignore = false;
-    async function run() {
-      try {
-        setError(null);
-        setLoading(true);
-        if (!ignore) {
-          setTyped(markdown || "");
-        }
-      } catch (e: any) {
-        if (!ignore) setError(e?.message || "Failed to generate summary");
-      } finally {
-        if (!ignore) setLoading(false);
-      }
-    }
-    run();
-    return () => {
-      ignore = true;
-      if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
-    };
-  }, [open, videoId, markdown || "", language]);
-
-  // Typing animation once markdown arrives
-  useEffect(() => {
-    if (!open) return;
-    if (!markdown) return;
     if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
+    // Reset when markdown changes
+    if (!markdown) {
+      setTyped("");
+      return;
+    }
     typingIndexRef.current = 0;
+    setTyped("");
     const step = () => {
       const i = typingIndexRef.current;
-      if (i >= markdown.length) return;
+      if (!markdown || i >= markdown.length) return;
       setTyped((prev) => prev + markdown[i]);
       typingIndexRef.current = i + 1;
-      typingTimerRef.current = window.setTimeout(step, 8);
+      typingTimerRef.current = window.setTimeout(step, 3);
     };
-    typingTimerRef.current = window.setTimeout(step, 8);
+    typingTimerRef.current = window.setTimeout(step, 3);
     return () => {
       if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
     };
-  }, [markdown || "", open]);
+  }, [markdown]);
+
+  // Note: we intentionally do not depend on `open` here so typing can progress in the background.
 
   const copyMarkdown = async () => {
     try {
@@ -142,13 +122,9 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, langua
           </div>
         </div>
         <div className="max-h-[75vh] overflow-auto p-4">
-          {(loading || fetchingSummary) && (
-            <div className="text-sm text-gray-600">{fetchingSummary ? "Generating AI summary…" : "Thinking… generating summary…"}</div>
-          )}
-          {error && (
-            <div className="text-sm text-red-600">{error}</div>
-          )}
-          {!loading && !error && (
+          {fetchingSummary ? (
+            <div className="text-sm text-gray-600">Thinking… generating summary…</div>
+          ) : (
             <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
           )}
         </div>
