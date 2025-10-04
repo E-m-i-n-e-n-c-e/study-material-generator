@@ -214,7 +214,6 @@ No YouTube API key is required. The application uses the `youtubei.js` library t
 | `express` | ^5.1.0 | Web framework |
 | `openai` | ^4.104.0 | AI service integration |
 | `youtubei.js` | ^15.1.1 | YouTube transcript extraction |
-| `undici` | ^6.19.8 | HTTP client |
 
 ### Frontend Dependencies
 
