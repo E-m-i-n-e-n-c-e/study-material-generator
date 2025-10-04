@@ -16,6 +16,10 @@ type ApiSuccess = {
   transcript: TranscriptSegment[];
 };
 
+// Typed API helper shapes
+type ExtractResponse = Partial<ApiSuccess> & { error?: string };
+type SummarizeResponse = { markdown?: string; error?: string; [key: string]: unknown };
+
 type Props = {
   videoId?: string;
   url?: string;
