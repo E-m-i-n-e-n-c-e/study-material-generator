@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Container from "@/components/Home/Container";
+import SummaryCanvas from "@/components/Summary/SummaryCanvas";
 
 export type TranscriptSegment = {
   text: string;
@@ -35,6 +36,10 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [startAt, setStartAt] = useState<number>(0);
+  const [openSummary, setOpenSummary] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const [fetchingSummary, setFetchingSummary] = useState(false);
+  const [summaryMarkdown, setSummaryMarkdown] = useState<string | null>(null);
 
   const requestBody = useMemo(() => {
     if (url) return { url };
@@ -62,6 +67,20 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           setVideoId(data.videoId);
           const sorted = (data.transcript || []).slice().sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
           setSegments(sorted);
+          // Prefetch AI summary once, reuse until reload
+          if (!summaryMarkdown && !fetchingSummary && data.videoId && sorted.length) {
+            setFetchingSummary(true);
+            fetch('/api/summarize', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ videoId: data.videoId, transcript: sorted }),
+            })
+              .then(r => r.json().catch(() => ({})))
+              .then(j => {
+                if (j?.markdown) setSummaryMarkdown(String(j.markdown));
+              })
+              .finally(() => setFetchingSummary(false));
+          }
         }
       } catch (e: any) {
         if (!ignore) setError(e?.message || "Failed to load transcript");
@@ -77,18 +96,46 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
 
   const embedSrc = useMemo(() => {
     if (!videoId) return undefined;
-    // Include start param to seek on click
-    const start = Math.max(0, Math.floor(startAt));
-    const params = new URLSearchParams({ enablejsapi: "1", start: String(start) });
+    const params = new URLSearchParams({ enablejsapi: "1", playsinline: "1" });
     return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
-  }, [videoId, startAt]);
+  }, [videoId]);
+
+  // Use the JS API via postMessage to seek and play without reloading the iframe
+  const seekAndPlay = (seconds: number) => {
+    setStartAt(seconds);
+    const iframe = iframeRef.current;
+    const target = iframe?.contentWindow;
+    if (!target) return;
+    // Seek to time
+    target.postMessage(
+      JSON.stringify({ event: "command", func: "seekTo", args: [Math.max(0, Math.floor(seconds)), true] }),
+      "*"
+    );
+    // Play video (allowed due to user gesture on click)
+    target.postMessage(
+      JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+      "*"
+    );
+  };
 
   return (
     <section className="py-10">
       <Container>
-        <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-semibold">Transcript</h1>
-          <p className="mt-1 text-sm text-gray-600">Interactive transcript with timestamps and inline video.</p>
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold">Transcript</h1>
+            <p className="mt-1 text-sm text-gray-600">Interactive transcript with timestamps and inline video.</p>
+          </div>
+          <div>
+            <button
+              onClick={() => setOpenSummary(true)}
+              disabled={!segments?.length || !videoId}
+              className="inline-flex items-center rounded-md bg-black px-3 py-2 text-white text-sm disabled:opacity-50"
+              title={!segments?.length ? "Load transcript first" : "Generate AI Summary"}
+            >
+              Generate Summary
+            </button>
+          </div>
         </div>
 
         {loading && (
@@ -106,6 +153,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
                   <iframe
                     key={embedSrc}
                     className="h-full w-full"
+                    ref={iframeRef}
                     src={embedSrc}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -127,7 +175,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
                     return (
                       <button
                         key={idx}
-                        onClick={() => setStartAt(start)}
+                        onClick={() => seekAndPlay(start)}
                         className="w-full text-left py-2 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
                       >
                         <div className="flex items-start gap-3">
@@ -148,6 +196,13 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           </div>
         )}
       </Container>
+      <SummaryCanvas
+        open={openSummary}
+        onClose={() => setOpenSummary(false)}
+        videoId={videoId || ""}
+        markdown={summaryMarkdown}
+        fetchingSummary={fetchingSummary}
+      />
     </section>
   );
 }
