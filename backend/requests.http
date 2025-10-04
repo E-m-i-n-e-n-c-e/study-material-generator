@@ -1,0 +1,58 @@
+# REST Client requests for Study Material Generator backend
+# Requires VS Code REST Client or compatible tool
+
+### Variables
+@host = http://localhost
+@port = 4000
+@baseUrl = {{host}}:{{port}}
+@youtubeUrl = https://www.youtube.com/watch?v=SquU4Bpc73Y
+@language = en
+
+### Health check
+GET {{baseUrl}}/
+
+### Extract transcript only
+POST {{baseUrl}}/api/extract
+Content-Type: application/json
+
+{
+  "url": "https://www.youtube.com/watch?v=SquU4Bpc73Y"
+}
+
+### Combined: extract transcript + generate study material
+POST {{baseUrl}}/api/process
+Content-Type: application/json
+
+{
+  "url": "https://www.youtube.com/watch?v=SquU4Bpc73Y",
+  "language": "en"
+}
+
+### Generate study material only (requires transcript from previous extract)
+# 1) Run the Extract request above, copy videoId and transcript array from the response.
+# 2) Paste them below to test summarize directly.
+POST {{baseUrl}}/api/summarize
+Content-Type: application/json
+
+{
+  "videoId": "SquU4Bpc73Y",
+  "transcript": [
+    # REPLACE_WITH_TRANSCRIPT_ARRAY
+  ],
+  "language": "en"
+}
+
+### Negative test: invalid URL
+POST {{baseUrl}}/api/extract
+Content-Type: application/json
+
+{
+  "url": "https://www.youtube.com/watch?v=SquU4Bpc73Y"
+}
+
+### Negative test: missing url in /api/process
+POST {{baseUrl}}/api/process
+Content-Type: application/json
+
+{
+}

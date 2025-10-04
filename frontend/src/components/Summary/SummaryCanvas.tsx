@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 
@@ -14,46 +14,17 @@ type Props = {
 };
 
 export default function SummaryCanvas({ open, onClose, videoId, markdown, language, fetchingSummary }: Props) {
-  const [typed, setTyped] = useState<string>("");
-  const typingIndexRef = useRef(0);
-  const typingTimerRef = useRef<number | null>(null);
-
   const canActions = useMemo(() => !!markdown && !fetchingSummary, [markdown, fetchingSummary]);
 
-  // Render HTML from the progressively typed markdown
+  // Render HTML from the markdown directly (no typing animation)
   const renderedHTML = useMemo(() => {
     try {
-      const html = marked.parse(typed) as string;
+      const html = marked.parse(markdown || "") as string;
       return DOMPurify.sanitize(html);
     } catch {
       return "";
     }
-  }, [typed]);
-
-  // Typing animation: start as soon as markdown is available (no dependency on canvas visibility)
-  useEffect(() => {
-    if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
-    // Reset when markdown changes
-    if (!markdown) {
-      setTyped("");
-      return;
-    }
-    typingIndexRef.current = 0;
-    setTyped("");
-    const step = () => {
-      const i = typingIndexRef.current;
-      if (!markdown || i >= markdown.length) return;
-      setTyped((prev) => prev + markdown[i]);
-      typingIndexRef.current = i + 1;
-      typingTimerRef.current = window.setTimeout(step, 3);
-    };
-    typingTimerRef.current = window.setTimeout(step, 3);
-    return () => {
-      if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
-    };
   }, [markdown]);
-
-  // Note: we intentionally do not depend on `open` here so typing can progress in the background.
 
   const copyMarkdown = async () => {
     try {

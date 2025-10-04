@@ -40,6 +40,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [fetchingSummary, setFetchingSummary] = useState(false);
   const [summaryMarkdown, setSummaryMarkdown] = useState<string | null>(null);
+  const [showSummaryReady, setShowSummaryReady] = useState(false);
 
   const requestBody = useMemo(() => {
     if (url) return { url };
@@ -54,29 +55,63 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
       setLoading(true);
       setError(null);
       try {
-        // Use combined endpoint for better performance
-        const res = await fetch("/api/process", {
+        // First, extract transcript
+        const extractRes = await fetch("/api/extract", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         });
-        const data: Partial<ApiSuccess> & { error?: string; studyMaterial?: string } = await res.json().catch(() => ({} as any));
-        if (!res.ok) {
-          throw new Error(data?.error || `Request failed (${res.status})`);
+        const extractData: Partial<ApiSuccess> & { error?: string } = await extractRes.json().catch(() => ({} as any));
+        if (!extractRes.ok) {
+          throw new Error(extractData?.error || `Extract request failed (${extractRes.status})`);
         }
+        
         if (!ignore) {
-          setVideoId(data.videoId);
-          const sorted = (data.transcript || []).slice().sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
+          setVideoId(extractData.videoId);
+          const sorted = (extractData.transcript || []).slice().sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
           setSegments(sorted);
+          setLoading(false); // Show transcript immediately
           
-          // Handle study material from combined endpoint
-          if (data.studyMaterial) {
-            setSummaryMarkdown(String(data.studyMaterial));
+          // Generate study material in the background
+          if (extractData.videoId && extractData.transcript) {
+            setFetchingSummary(true);
+            // Don't await this - let it run in background
+            fetch("/api/summarize", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                videoId: extractData.videoId,
+                transcript: extractData.transcript,
+                language: "en"
+              }),
+            })
+            .then(summaryRes => {
+              return summaryRes.json().catch(() => ({} as any)).then(summaryData => ({
+                ok: summaryRes.ok,
+                data: summaryData
+              }));
+            })
+            .then(({ ok, data: summaryData }) => {
+              if (!ignore && ok && summaryData.markdown) {
+                setSummaryMarkdown(String(summaryData.markdown));
+                setShowSummaryReady(true);
+                setTimeout(() => {
+                  setShowSummaryReady(false);
+                }, 1000); // Hide after 1 seconds
+              }
+            })
+            .catch(summaryError => {
+              console.error("Failed to generate summary:", summaryError);
+            })
+            .finally(() => {
+              if (!ignore) {
+                setFetchingSummary(false);
+              }
+            });
           }
         }
       } catch (e: any) {
         if (!ignore) setError(e?.message || "Failed to load transcript");
-      } finally {
         if (!ignore) setLoading(false);
       }
     }
@@ -118,14 +153,24 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
             <h1 className="text-2xl sm:text-3xl font-semibold">Transcript</h1>
             <p className="mt-1 text-sm text-gray-600">Interactive transcript with timestamps and inline video.</p>
           </div>
-          <div>
+          <div className="flex items-center gap-3">
+            {fetchingSummary && (
+              <div className="flex items-center gap-2 text-blue-600 text-sm">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-500"></div>
+                <span>Generating study material...</span>
+              </div>
+            )}
             <button
               onClick={() => setOpenSummary(true)}
-              disabled={!segments?.length || !videoId || loading}
-              className="inline-flex items-center rounded-md bg-black px-3 py-2 text-white text-sm disabled:opacity-50"
-              title={!segments?.length ? "Load transcript first" : "View Study Material"}
+              disabled={!segments?.length || !videoId || loading || fetchingSummary}
+              className="inline-flex items-center rounded-md bg-black px-3 py-2 text-white text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              title={
+                !segments?.length ? "Load transcript first" : 
+                fetchingSummary ? "Study material is being generated..." : 
+                "View Study Material"
+              }
             >
-              {loading ? "Processing..." : "View Study Material"}
+              View Study Material
             </button>
           </div>
         </div>
@@ -134,12 +179,10 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           <div className="rounded-md border bg-white p-6 text-sm">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-4"></div>
-              <div className="text-gray-700 font-medium mb-2">Processing Video</div>
+              <div className="text-gray-700 font-medium mb-2">Extracting Transcript</div>
               <div className="text-gray-600 text-xs space-y-1">
                 <div>• Extracting transcript from YouTube</div>
                 <div>• Normalizing transcript content</div>
-                <div>• Generating structured study material</div>
-                <div>• Creating study tips and key takeaways</div>
               </div>
             </div>
           </div>
@@ -150,7 +193,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
 
         {!loading && !error && videoId && (
           <>
-            {summaryMarkdown && (
+            {showSummaryReady && summaryMarkdown && (
               <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm">
                 <div className="flex items-center gap-2 text-green-700">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
