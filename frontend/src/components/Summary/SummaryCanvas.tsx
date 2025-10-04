@@ -10,10 +10,9 @@ type Props = {
   fetchingSummary?: boolean;
   markdown: string | null;
   videoId: string;
-  language?: string;
 };
 
-export default function SummaryCanvas({ open, onClose, videoId, markdown, language, fetchingSummary }: Props) {
+export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchingSummary }: Props) {
   const canActions = useMemo(() => !!markdown && !fetchingSummary, [markdown, fetchingSummary]);
 
   // Render HTML from the markdown directly (no typing animation)

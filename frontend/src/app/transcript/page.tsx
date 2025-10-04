@@ -5,9 +5,10 @@ import TranscriptViewer from "@/components/Transcript/TranscriptViewer";
 export default function TranscriptPage({
   searchParams,
 }: {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const vParam = searchParams?.v;
+  const sp = await searchParams;
+  const vParam = sp?.v;
   const videoId = Array.isArray(vParam) ? vParam[0] : vParam;
 
   return (

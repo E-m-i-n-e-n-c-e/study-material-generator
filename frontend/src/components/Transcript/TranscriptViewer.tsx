@@ -39,7 +39,6 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
   const [segments, setSegments] = useState<TranscriptSegment[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [startAt, setStartAt] = useState<number>(0);
   const [openSummary, setOpenSummary] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [fetchingSummary, setFetchingSummary] = useState(false);
@@ -67,10 +66,9 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         });
-        let extractData: ExtractResponse = {} as ExtractResponse;
-        try {
-          extractData = (await extractRes.json()) as ExtractResponse;
-        } catch { /* keep default empty object */ }
+        const extractData: Partial<ApiSuccess> & { error?: string } = await extractRes
+          .json()
+          .catch(() => ({} as unknown as Partial<ApiSuccess> & { error?: string }));
         if (!extractRes.ok) {
           throw new Error(extractData?.error || `Extract request failed (${extractRes.status})`);
         }
@@ -83,6 +81,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           
           // Generate study material in the background
           if (extractData.videoId && extractData.transcript) {
+            // Mark summarization as in-progress
             setFetchingSummary(true);
             // Don't await this - let it run in background
             fetch("/api/summarize", {
@@ -94,23 +93,17 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
                 language: "en"
               }),
             })
-            .then(async (summaryRes) => {
-              let summaryData: SummarizeResponse = {};
-              try {
-                summaryData = (await summaryRes.json()) as SummarizeResponse;
-              } catch { /* keep default empty object */ }
-              return { ok: summaryRes.ok, data: summaryData };
-            })
-            .then(({ ok, data: summaryData }) => {
-              if (!ignore && ok && summaryData.markdown) {
-                setSummaryMarkdown(String(summaryData.markdown));
+            .then(summaryRes => summaryRes.json())
+            .then((summaryData: { markdown?: string }) => {
+              if (!ignore && summaryData?.markdown) {
+                setSummaryMarkdown(summaryData.markdown);
                 setShowSummaryReady(true);
                 setTimeout(() => {
                   setShowSummaryReady(false);
                 }, 1000); // Hide after 1 seconds
               }
             })
-            .catch(summaryError => {
+            .catch((summaryError) => {
               console.error("Failed to generate summary:", summaryError);
             })
             .finally(() => {
@@ -121,8 +114,8 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           }
         }
       } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
-        if (!ignore) setError(message || "Failed to load transcript");
+        const msg = e instanceof Error ? e.message : "Failed to load transcript";
+        if (!ignore) setError(msg);
         if (!ignore) setLoading(false);
       }
     }
@@ -134,11 +127,13 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
 
   const plainTranscript = useMemo(() => {
     if (!segments || !segments.length) return "";
-    return segments.map(s => (s.text || "").trim()).filter(Boolean).join("\n");
+    return segments
+      .map((s: TranscriptSegment) => (s.text || "").trim())
+      .filter(Boolean)
+      .join("\n");
   }, [segments]);
 
   const copyTranscript = async () => {
-    if (!segments?.length) return;
     setCopying(true);
     const text = plainTranscript;
     try {
@@ -149,7 +144,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
       }
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch (e) {
+    } catch {
       try {
         const ta = document.createElement("textarea");
         ta.value = text;
@@ -178,7 +173,6 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
 
   // Use the JS API via postMessage to seek and play without reloading the iframe
   const seekAndPlay = (seconds: number) => {
-    setStartAt(seconds);
     const iframe = iframeRef.current;
     const target = iframe?.contentWindow;
     if (!target) return;

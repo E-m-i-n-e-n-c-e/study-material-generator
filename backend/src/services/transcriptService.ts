@@ -57,6 +57,17 @@ export function getVideoIdFromUrl(url: URL): string | null {
   return null;
 }
 
+// Singleton Innertube client to avoid re-initialization per request
+let ytClient: Innertube | null = null;
+async function getYTClient(): Promise<Innertube> {
+  if (!ytClient) {
+    ytClient = await Innertube.create({
+      client_type: ClientType.WEB
+    });
+  }
+  return ytClient;
+}
+
 /**
  * Fetch transcript for a YouTube video
  * This service can be easily swapped for different transcript libraries
@@ -68,9 +79,7 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptResult
     const lang = process.env.YT_LANG || 'en';
 
     // Create Innertube client (use WEB client). Avoid passing unsupported options.
-    const yt = await Innertube.create({
-      client_type: ClientType.WEB
-    });
+    const yt = await getYTClient();
 
     // Fetch video info and then transcript
     const info = await yt.getInfo(videoId);
