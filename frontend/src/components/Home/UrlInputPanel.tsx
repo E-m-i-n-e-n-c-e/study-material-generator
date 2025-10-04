@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   open: boolean;
@@ -11,6 +12,7 @@ export default function UrlInputPanel({ open }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const isValid = useMemo(() => {
     if (!url) return false;
@@ -62,8 +64,15 @@ export default function UrlInputPanel({ open }: Props) {
       
       // Handle successful response
       if (data?.status === 200 && data?.transcript) {
+        // Navigate to transcript page with videoId
+        const vid = data.videoId as string;
+        if (vid) {
+          router.push(`/transcript?v=${encodeURIComponent(vid)}`);
+          return;
+        }
+        // Fallback: show message if no video id is present
         const transcriptCount = data.transcript.length;
-        setMessage(`Successfully fetched transcript with ${transcriptCount} segments. Video ID: ${data.videoId}`);
+        setMessage(`Successfully fetched transcript with ${transcriptCount} segments.`);
       } else {
         setMessage(data?.message || "Request processed successfully.");
       }
