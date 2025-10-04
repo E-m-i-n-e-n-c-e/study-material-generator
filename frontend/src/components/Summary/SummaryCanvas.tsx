@@ -98,7 +98,7 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, langua
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="relative w-full max-w-5xl mx-4 rounded-xl border bg-white shadow-xl">
         <div className="flex items-center justify-between border-b px-4 py-2">
-          <div className="font-medium">AI Summary</div>
+          <div className="font-medium">Study Material</div>
           <div className="flex items-center gap-2">
             <button
               onClick={copyMarkdown}
@@ -123,7 +123,13 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, langua
         </div>
         <div className="max-h-[75vh] overflow-auto p-4">
           {fetchingSummary ? (
-            <div className="text-sm text-gray-600">Thinking… generating summary…</div>
+            <div className="flex items-center justify-center py-8">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-4"></div>
+                <div className="text-sm text-gray-600">Generating study material...</div>
+                <div className="text-xs text-gray-500 mt-2">This may take a few moments</div>
+              </div>
+            </div>
           ) : (
             <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: renderedHTML }} />
           )}

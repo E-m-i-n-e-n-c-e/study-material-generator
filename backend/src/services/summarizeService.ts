@@ -15,13 +15,81 @@ export type SummarizeResult = {
   error: string;
 };
 
-const DEFAULT_PROMPT = `You are a helpful assistant. Create a concise, well-structured study summary in Markdown for the given YouTube transcript.\n
-- Title\n- TL;DR\n- Key Points (bulleted)\n- Section-wise Summary (with subheadings)\n- Actionable Takeaways\n- Glossary (if relevant)\n\nKeep it clean, readable, and use Markdown syntax only.`;
+const DEFAULT_PROMPT = `You are an expert educational content creator. Create a comprehensive study material from the given YouTube transcript.
+
+Structure the output as follows:
+
+### **Overview**
+[Brief summary – 2–3 sentences about what the video covers]
+
+---
+
+### **Concept 1: [Topic Name]**
+**Timestamp:** [MM:SS]
+
+- Main Point 1
+- Main Point 2
+- Main Point 3
+
+**Why This Matters:** [Explanation of importance and relevance]
+
+---
+
+### **Concept 2: [Topic Name]**
+**Timestamp:** [MM:SS]
+
+- Main Point 1
+- Main Point 2
+- Main Point 3
+
+**Key Takeaway:** [Summary of this concept]
+
+---
+
+[Continue with more concepts as needed]
+
+### **Summary**
+[Overall summary of the entire content - 3-4 sentences]
+
+### **Study Tips**
+- [Practical tip 1]
+- [Practical tip 2]
+- [Practical tip 3]
+
+### **Further Exploration**
+- [Related topic 1]
+- [Related topic 2]
+- [Additional resources or concepts to explore]
+
+---
+
+**Instructions:**
+1. Divide content into logical sections/topics based on the transcript
+2. Add clear topic headings that describe each concept
+3. Highlight key concepts and important details
+4. Use bullet points for important details
+5. Include timestamps for each major concept (format as MM:SS)
+6. Provide "Why This Matters" or "Key Takeaway" for each concept
+7. Make it study-friendly with clear structure and actionable insights
+8. Use only Markdown syntax, no code blocks or special formatting`;
 
 function buildPrompt(segments: TranscriptSegment[], language?: string) {
-  const text = segments.map(s => s.text).join("\n");
-  const langHint = language ? `Write the summary in ${language}.` : "";
-  return `${DEFAULT_PROMPT}\n\n${langHint}\n\nTranscript:\n${text}`;
+  // Create transcript with timestamps for better context
+  const transcriptWithTimestamps = segments
+    .map(s => {
+      const timestamp = formatTimestamp(s.offset || 0);
+      return `[${timestamp}] ${s.text}`;
+    })
+    .join("\n");
+  
+  const langHint = language ? `Write the study material in ${language}.` : "";
+  return `${DEFAULT_PROMPT}\n\n${langHint}\n\nTranscript with timestamps:\n${transcriptWithTimestamps}`;
+}
+
+function formatTimestamp(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
 export async function summarizeTranscript(req: SummarizeRequest): Promise<SummarizeResult> {

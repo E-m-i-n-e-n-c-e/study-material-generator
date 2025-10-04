@@ -116,7 +116,14 @@ export default function UrlInputPanel({ open }: Props) {
               disabled={loading}
               className="inline-flex items-center justify-center rounded-md bg-black px-4 py-2 text-white text-sm disabled:opacity-60"
             >
-              {loading ? "Submitting..." : "Submit"}
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Processing...
+                </>
+              ) : (
+                "Submit"
+              )}
             </button>
           </div>
           <div className="mt-3 min-h-[1.25rem] text-sm">
@@ -128,7 +135,8 @@ export default function UrlInputPanel({ open }: Props) {
           </div>
           <div className="mt-4 text-xs text-gray-500">
             <ul className="list-disc pl-5 space-y-1">
-              <li>We’ll fetch the transcript if available and process it.</li>
+              <li>We'll extract the transcript and generate structured study material.</li>
+              <li>Processing includes normalization, topic extraction, and study tips.</li>
               <li>Unsupported videos or missing transcripts will show a helpful error.</li>
             </ul>
           </div>

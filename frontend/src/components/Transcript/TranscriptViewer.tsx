@@ -54,12 +54,13 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/extract", {
+        // Use combined endpoint for better performance
+        const res = await fetch("/api/process", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         });
-        const data: Partial<ApiSuccess> & { error?: string } = await res.json().catch(() => ({} as any));
+        const data: Partial<ApiSuccess> & { error?: string; studyMaterial?: string } = await res.json().catch(() => ({} as any));
         if (!res.ok) {
           throw new Error(data?.error || `Request failed (${res.status})`);
         }
@@ -67,19 +68,10 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           setVideoId(data.videoId);
           const sorted = (data.transcript || []).slice().sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
           setSegments(sorted);
-          // Prefetch AI summary once, reuse until reload
-          if (!summaryMarkdown && !fetchingSummary && data.videoId && sorted.length) {
-            setFetchingSummary(true);
-            fetch('/api/summarize', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ videoId: data.videoId, transcript: sorted }),
-            })
-              .then(r => r.json().catch(() => ({})))
-              .then(j => {
-                if (j?.markdown) setSummaryMarkdown(String(j.markdown));
-              })
-              .finally(() => setFetchingSummary(false));
+          
+          // Handle study material from combined endpoint
+          if (data.studyMaterial) {
+            setSummaryMarkdown(String(data.studyMaterial));
           }
         }
       } catch (e: any) {
@@ -129,24 +121,44 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           <div>
             <button
               onClick={() => setOpenSummary(true)}
-              disabled={!segments?.length || !videoId}
+              disabled={!segments?.length || !videoId || loading}
               className="inline-flex items-center rounded-md bg-black px-3 py-2 text-white text-sm disabled:opacity-50"
-              title={!segments?.length ? "Load transcript first" : "View AI Summary"}
+              title={!segments?.length ? "Load transcript first" : "View Study Material"}
             >
-              View Summary
+              {loading ? "Processing..." : "View Study Material"}
             </button>
           </div>
         </div>
 
         {loading && (
-          <div className="rounded-md border bg-white p-4 text-sm">Loading transcript…</div>
+          <div className="rounded-md border bg-white p-6 text-sm">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-4"></div>
+              <div className="text-gray-700 font-medium mb-2">Processing Video</div>
+              <div className="text-gray-600 text-xs space-y-1">
+                <div>• Extracting transcript from YouTube</div>
+                <div>• Normalizing transcript content</div>
+                <div>• Generating structured study material</div>
+                <div>• Creating study tips and key takeaways</div>
+              </div>
+            </div>
+          </div>
         )}
         {error && (
           <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
         )}
 
         {!loading && !error && videoId && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <>
+            {summaryMarkdown && (
+              <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm">
+                <div className="flex items-center gap-2 text-green-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="font-medium">Study material ready!</span>
+                </div>
+              </div>
+            )}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <div className="aspect-video w-full overflow-hidden rounded-lg border bg-black">
                 {embedSrc ? (
@@ -194,6 +206,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
               </div>
             </div>
           </div>
+          </>
         )}
       </Container>
       <SummaryCanvas
