@@ -49,7 +49,8 @@ export async function extractController(req: Request, res: Response) {
           return res.status(502).json({ error: result.error });
       }
     }
-
+    result.transcript.sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
+    console.log("Transcript fetched successfully:", result);
     // Return raw transcript to frontend for testing/display
     return res.json({
       status: 200,

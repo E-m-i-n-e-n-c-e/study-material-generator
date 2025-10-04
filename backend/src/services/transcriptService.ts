@@ -1,3 +1,5 @@
+import { Innertube, ClientType } from 'youtubei.js';
+
 /**
  * Transcript segment shape used by most transcript libs:
  * { text: string, offset?: number, duration?: number }
@@ -16,6 +18,23 @@ export type TranscriptResult = {
   success: false;
   error: string;
   code: 'NO_TRANSCRIPT' | 'FETCH_ERROR' | 'INVALID_VIDEO' | 'LIBRARY_ERROR';
+};
+
+// Minimal shapes from youtubei.js transcript payload to have type-safety locally
+type YTTranscriptSegment = {
+  start_ms: number;
+  end_ms: number;
+  snippet?: { text?: string };
+};
+
+type YTTranscriptPayload = {
+  transcript?: {
+    content?: {
+      body?: {
+        initial_segments?: YTTranscriptSegment[];
+      }
+    }
+  }
 };
 
 /**
@@ -46,41 +65,45 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptResult
   try {
     console.log("Fetching transcript for videoId:", videoId);
 
-    // Dynamic import of the transcript library
-    const mod = await import("youtube-transcript").catch((err) => {
-      console.error("Error importing youtube-transcript:", err);
-      return null;
+    const lang = process.env.YT_LANG || 'en';
+
+    // Create Innertube client (use WEB client). Avoid passing unsupported options.
+    const yt = await Innertube.create({
+      client_type: ClientType.WEB
     });
 
-    if (!mod) {
-      console.error("Transcript library not available.");
-      return {
-        success: false,
-        error: "Transcript library not available on server. Install `youtube-transcript`.",
-        code: 'LIBRARY_ERROR'
-      };
+    // Fetch video info and then transcript
+    const info = await yt.getInfo(videoId);
+
+    // Some versions expose info.getTranscript(lang)
+    let scriptInfo: YTTranscriptPayload | null = null;
+    try {
+      if (typeof (info as any).getTranscript === 'function') {
+        scriptInfo = await (info as any).getTranscript(lang);
+      } else if (typeof (yt as any).getTranscript === 'function') {
+        // Fallback: some versions may allow calling on the client directly
+        scriptInfo = await (yt as any).getTranscript(videoId, lang);
+      }
+    } catch (e) {
+      console.warn('youtubei.js getTranscript threw, will continue to map if possible:', e);
     }
 
-    // Extract the correct transcript fetching function from the library
-    const YoutubeTranscript = (mod as any).YoutubeTranscript ?? (mod as any).default ?? mod;
-
-    console.log("Loaded Transcript Library:", YoutubeTranscript);
-
-    // Check if fetchTranscript is available in the library
+    // Map initial_segments to TranscriptSegment shape
+    const segments: YTTranscriptSegment[] | undefined = scriptInfo?.transcript?.content?.body?.initial_segments;
     let transcript: TranscriptSegment[] | null = null;
-    if (typeof YoutubeTranscript?.fetchTranscript === "function") {
-      console.log("Attempting to fetch transcript...");
-      transcript = await YoutubeTranscript.fetchTranscript(videoId);
-      console.log("Transcript fetched successfully:", transcript);
-    } else if (typeof (mod as any).fetchTranscript === "function") {
-      transcript = await (mod as any).fetchTranscript(videoId);
-    } else {
-      console.error("Library does not expose a valid fetch function.");
-      return {
-        success: false,
-        error: "Loaded transcript module doesn't expose a fetch function. Check module exports or switch library.",
-        code: 'LIBRARY_ERROR'
-      };
+    if (Array.isArray(segments)) {
+      transcript = segments
+        .map((segment: YTTranscriptSegment) => {
+          const startMs = Number(segment.start_ms ?? 0);
+          const endMs = Number(segment.end_ms ?? startMs);
+          const text = String(segment.snippet?.text ?? '').trim();
+          return {
+            text,
+            offset: isNaN(startMs) ? 0 : startMs / 1000,
+            duration: isNaN(endMs - startMs) ? undefined : (endMs - startMs) / 1000,
+          } as TranscriptSegment;
+        })
+        .filter((s: TranscriptSegment) => s.text.length > 0);
     }
 
     // If no transcript found or empty, handle gracefully
