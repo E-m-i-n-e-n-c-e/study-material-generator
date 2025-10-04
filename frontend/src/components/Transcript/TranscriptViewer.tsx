@@ -41,6 +41,8 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
   const [fetchingSummary, setFetchingSummary] = useState(false);
   const [summaryMarkdown, setSummaryMarkdown] = useState<string | null>(null);
   const [showSummaryReady, setShowSummaryReady] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const requestBody = useMemo(() => {
     if (url) return { url };
@@ -121,6 +123,44 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
     };
   }, [requestBody]);
 
+  const plainTranscript = useMemo(() => {
+    if (!segments || !segments.length) return "";
+    return segments.map(s => (s.text || "").trim()).filter(Boolean).join("\n");
+  }, [segments]);
+
+  const copyTranscript = async () => {
+    if (!segments?.length) return;
+    setCopying(true);
+    const text = plainTranscript;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        throw new Error("Clipboard API not available");
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.top = "-1000px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } catch {
+        console.error("Failed to copy transcript");
+      }
+    } finally {
+      setCopying(false);
+    }
+  };
+
   const embedSrc = useMemo(() => {
     if (!videoId) return undefined;
     const params = new URLSearchParams({ enablejsapi: "1", playsinline: "1" });
@@ -160,6 +200,14 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
                 <span>Generating study material...</span>
               </div>
             )}
+            <button
+              onClick={copyTranscript}
+              disabled={!segments?.length || loading || copying}
+              className="inline-flex items-center rounded-md border px-3 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              title={!segments?.length ? "Load transcript first" : copying ? "Copying..." : "Copy Transcript"}
+            >
+              {copied ? "Copied" : copying ? "Copying..." : "Copy Transcript"}
+            </button>
             <button
               onClick={() => setOpenSummary(true)}
               disabled={!segments?.length || !videoId || loading || fetchingSummary}
