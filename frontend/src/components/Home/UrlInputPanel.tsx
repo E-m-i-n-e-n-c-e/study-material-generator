@@ -7,6 +7,24 @@ type Props = {
   open: boolean;
 };
 
+// Extract video ID from various YouTube URL formats (mirrors backend helper)
+function getVideoIdFromUrl(url: URL): string | null {
+  const host = url.hostname.toLowerCase();
+  console.log("URL is ", url);
+  console.log("host is ",host);
+  if (host === "youtu.be") {
+    // pathname like "/dQw4w9WgXcQ" or "/dQw4w9WgXcQ/..."
+    const id = url.pathname.replace(/^\/+/, "").split("/")[0];
+    console.log("id is", id);
+    return id || null;
+  }
+  // covers youtube.com, www.youtube.com, m.youtube.com, sub.youtube.com
+  if (host.endsWith("youtube.com")) {
+    return url.searchParams.get("v");
+  }
+  return null;
+}
+
 export default function UrlInputPanel({ open }: Props) {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,37 +65,16 @@ export default function UrlInputPanel({ open }: Props) {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/extract", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
-      
-      const data = await res.json().catch(() => ({}));
-      
-      if (!res.ok) {
-        // Handle different error types gracefully
-        const errorMessage = data?.error || "Request failed";
-        setError(errorMessage);
+      // Use the shared extraction logic and navigate immediately (no prefetch)
+      const u = new URL(url);
+      const vid = getVideoIdFromUrl(u);
+      if (!vid) {
+        setError("Could not parse video id from the URL.");
         return;
       }
-      
-      // Handle successful response
-      if (data?.status === 200 && data?.transcript) {
-        // Navigate to transcript page with videoId
-        const vid = data.videoId as string;
-        if (vid) {
-          router.push(`/transcript?v=${encodeURIComponent(vid)}`);
-          return;
-        }
-        // Fallback: show message if no video id is present
-        const transcriptCount = data.transcript.length;
-        setMessage(`Successfully fetched transcript with ${transcriptCount} segments.`);
-      } else {
-        setMessage(data?.message || "Request processed successfully.");
-      }
+      router.push(`/transcript?v=${encodeURIComponent(vid)}`);
     } catch {
-      setError("Could not reach backend. Please try again.");
+      setError("Invalid URL.");
     } finally {
       setLoading(false);
     }
