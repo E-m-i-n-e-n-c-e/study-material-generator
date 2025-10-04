@@ -28,7 +28,18 @@ Content-Type: application/json
 {
   "videoId": "SquU4Bpc73Y",
   "transcript": [
-    # REPLACE_WITH_TRANSCRIPT_ARRAY
+    {
+      "offset": 0,
+      "text": "hi"
+    },
+    {
+      "offset": 1,
+      "text": "hello"
+    },
+    {
+      "offset": 2,
+      "text": "hii"
+    }
   ],
   "language": "en"
 }

@@ -76,12 +76,12 @@ export default function UrlInputPanel({ open }: Props) {
       } else {
         setMessage(data?.message || "Request processed successfully.");
       }
-    } catch (e) {
+    } catch {
       setError("Could not reach backend. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [isValid, url]);
+  }, [isValid, url, router]);
 
   return (
     <section aria-hidden={!open} className={`overflow-hidden transition-all duration-300 ${open ? "max-h-[480px] opacity-100" : "max-h-0 opacity-0"}`}>
@@ -135,7 +135,7 @@ export default function UrlInputPanel({ open }: Props) {
           </div>
           <div className="mt-4 text-xs text-gray-500">
             <ul className="list-disc pl-5 space-y-1">
-              <li>We'll extract the transcript and generate structured study material.</li>
+              <li>We&apos;ll extract the transcript and generate structured study material.</li>
               <li>Processing includes normalization, topic extraction, and study tips.</li>
               <li>Unsupported videos or missing transcripts will show a helpful error.</li>
             </ul>
