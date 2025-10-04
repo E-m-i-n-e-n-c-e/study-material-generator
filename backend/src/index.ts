@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import studyRoutes from './routes/studyRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -6,12 +7,10 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 
 app.get('/', (_req: Request, res: Response) => {
-  res.send('Backend running');
+  res.send('Study Material Generator Backend - Running');
 });
 
-app.get('/api/hello', (_req: Request, res: Response) => {
-  res.json({ message: 'Hello World from Sarthak' });
-});
+app.use('/api', studyRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
