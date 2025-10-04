@@ -139,7 +139,7 @@ export async function summarizeTranscript(req: SummarizeRequest): Promise<Summar
 
 function removeTopLevelMarkdownBlock(md: string): string {
  if (md.startsWith("```markdown\n")) {
-  //remove first 3 chars
+  //remove first 12 chars
   md = md.slice(12);
  }
  if (md.endsWith("```\n") ) {
