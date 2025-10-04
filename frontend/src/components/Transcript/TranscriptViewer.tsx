@@ -16,6 +16,10 @@ type ApiSuccess = {
   transcript: TranscriptSegment[];
 };
 
+// Typed API helper shapes
+type ExtractResponse = Partial<ApiSuccess> & { error?: string };
+type SummarizeResponse = { markdown?: string; error?: string; [key: string]: unknown };
+
 type Props = {
   videoId?: string;
   url?: string;
@@ -63,7 +67,10 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         });
-        const extractData: Partial<ApiSuccess> & { error?: string } = await extractRes.json().catch(() => ({} as any));
+        let extractData: ExtractResponse = {} as ExtractResponse;
+        try {
+          extractData = (await extractRes.json()) as ExtractResponse;
+        } catch { /* keep default empty object */ }
         if (!extractRes.ok) {
           throw new Error(extractData?.error || `Extract request failed (${extractRes.status})`);
         }
@@ -87,11 +94,12 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
                 language: "en"
               }),
             })
-            .then(summaryRes => {
-              return summaryRes.json().catch(() => ({} as any)).then(summaryData => ({
-                ok: summaryRes.ok,
-                data: summaryData
-              }));
+            .then(async (summaryRes) => {
+              let summaryData: SummarizeResponse = {};
+              try {
+                summaryData = (await summaryRes.json()) as SummarizeResponse;
+              } catch { /* keep default empty object */ }
+              return { ok: summaryRes.ok, data: summaryData };
             })
             .then(({ ok, data: summaryData }) => {
               if (!ignore && ok && summaryData.markdown) {
@@ -112,8 +120,9 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
             });
           }
         }
-      } catch (e: any) {
-        if (!ignore) setError(e?.message || "Failed to load transcript");
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        if (!ignore) setError(message || "Failed to load transcript");
         if (!ignore) setLoading(false);
       }
     }

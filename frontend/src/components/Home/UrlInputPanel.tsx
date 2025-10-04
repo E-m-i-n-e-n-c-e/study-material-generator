@@ -135,7 +135,7 @@ export default function UrlInputPanel({ open }: Props) {
           </div>
           <div className="mt-4 text-xs text-gray-500">
             <ul className="list-disc pl-5 space-y-1">
-              <li>We'll extract the transcript and generate structured study material.</li>
+              <li>We&apos;ll extract the transcript and generate structured study material.</li>
               <li>Processing includes normalization, topic extraction, and study tips.</li>
               <li>Unsupported videos or missing transcripts will show a helpful error.</li>
             </ul>

@@ -2,13 +2,12 @@ import Header from "@/components/Home/Header";
 import Footer from "@/components/Home/Footer";
 import TranscriptViewer from "@/components/Transcript/TranscriptViewer";
 
-export default async function TranscriptPage({
+export default function TranscriptPage({
   searchParams,
 }: {
-  searchParams?: Promise<Record<string, string | string[] | undefined>> | Record<string, string | string[] | undefined>;
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  const sp = (await (searchParams as any)) as Record<string, string | string[] | undefined> | undefined;
-  const vParam = sp?.v;
+  const vParam = searchParams?.v;
   const videoId = Array.isArray(vParam) ? vParam[0] : vParam;
 
   return (
