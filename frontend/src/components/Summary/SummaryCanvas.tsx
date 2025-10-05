@@ -38,27 +38,22 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchi
     window.location.href = "/editor";
   };
 
-  const exportPdf = () => {
-    const w = window.open("", "_blank");
-    if (!w) return;
-    // Use full markdown rendered to HTML for export
-    const finalHtml = (() => {
-      try { return DOMPurify.sanitize(marked.parse(markdown || "") as string); } catch { return ""; }
-    })();
-    w.document.write(`<!doctype html><html><head><meta charset='utf-8'>
-      <title>Summary - ${videoId}</title>
-      <style>
-        body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; padding: 24px; color: #111827; }
-        h1,h2,h3 { margin: 1rem 0 .5rem; }
-        p, ul, ol, pre, code { margin: .5rem 0; }
-        ul, ol { padding-left: 1.25rem; }
-        code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-      </style>
-    </head><body>
-      <div id="content">${finalHtml}</div>
-      <script>window.onload = () => { setTimeout(() => window.print(), 150); };</script>
-    </body></html>`);
-    w.document.close();
+  const exportPdf = async () => {
+    try {
+      const res = await fetch("/api/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markdown: markdown || "", filename: `summary-${videoId}` })
+      });
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `summary-${videoId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {}
   };
 
   if (!open) return null;

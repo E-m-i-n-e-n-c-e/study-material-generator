@@ -1,40 +1,8 @@
 import { Request, Response } from "express";
 import { getVideoIdFromUrl, fetchTranscript } from "../services/transcriptService";
 import { summarizeTranscript } from "../services/summarizeService";
-import type { TranscriptSegment } from "../services/transcriptService";
-
-/**
- * Merge adjacent transcript segments if their combined duration is less than maxDuration seconds
- */
-function mergeShortSegments(segments: TranscriptSegment[], maxDuration: number): TranscriptSegment[] {
-  if (segments.length <= 1) return segments;
-  
-  const merged: TranscriptSegment[] = [];
-  let current = { ...segments[0] };
-  
-  for (let i = 1; i < segments.length; i++) {
-    const next = segments[i];
-    const currentDuration = current.duration ?? 0;
-    const nextDuration = next.duration ?? 0;
-    const combinedDuration = currentDuration + nextDuration;
-    
-    // If combined duration is less than maxDuration, merge the segments
-    if (combinedDuration < maxDuration) {
-      current.text += " " + next.text;
-      current.duration = combinedDuration;
-      // Keep the offset of the first segment
-    } else {
-      // Push current merged segment and start new one
-      merged.push(current);
-      current = { ...next };
-    }
-  }
-  
-  // Don't forget to add the last segment
-  merged.push(current);
-  
-  return merged;
-}
+import type { TranscriptSegment } from "../services/transcriptService"; 
+import { generatePdfFromMarkdown } from "../services/pdfService";
 
 /**
  * Extract transcript from YouTube video
@@ -87,16 +55,13 @@ export async function extractTranscript(req: Request, res: Response) {
       }
     }
     
-    result.transcript.sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
-    
-    // Merge adjacent segments with total duration < 5 seconds
-    const mergedTranscript = mergeShortSegments(result.transcript, 5);
-    
+    result.transcript.sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));  
+      
     // Return raw transcript to frontend for testing/display
     return res.json({
       status: 200,
       videoId: result.videoId,
-      transcript: mergedTranscript, // array of { text, offset, duration } (merged)
+      transcript: result.transcript, // array of { text, offset, duration } (merged)
       message: "Transcript fetched successfully.",
     });
   } catch (err) {
@@ -133,6 +98,31 @@ export async function generateStudyMaterial(req: Request, res: Response) {
     });
   } catch (e) {
     console.error("generateStudyMaterial error", e);
+    return res.status(500).json({ error: "Unexpected server error" });
+  }
+}
+
+/**
+ * Generate PDF from provided markdown
+ */
+export async function generatePdf(req: Request, res: Response) {
+  try {
+    const { markdown, filename } = req.body as { markdown?: string; filename?: string };
+    if (!markdown || typeof markdown !== "string") {
+      return res.status(400).json({ error: "Missing markdown in request body" });
+    }
+    
+    const safeName = (filename && typeof filename === "string" ? filename : "study-material").replace(/[^a-zA-Z0-9-_\.]/g, "_");
+    const result = await generatePdfFromMarkdown(markdown, { document_title: safeName });
+    if (!result.success) {
+      return res.status(500).json({ error: result.error });
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename=\"${safeName}.pdf\"`);
+    return res.status(200).send(result.buffer);
+  } catch (e) {
+    console.error("generatePdf error", e);
     return res.status(500).json({ error: "Unexpected server error" });
   }
 }

@@ -1,8 +1,11 @@
 import express, { Request, Response } from 'express';
 import studyRoutes from './routes/studyRoutes';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 

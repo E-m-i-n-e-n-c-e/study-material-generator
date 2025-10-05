@@ -57,6 +57,39 @@ export function getVideoIdFromUrl(url: URL): string | null {
   return null;
 }
 
+/**
+ * Merge adjacent transcript segments if their combined duration is less than maxDuration seconds
+ */
+function mergeShortSegments(segments: TranscriptSegment[], maxDuration: number): TranscriptSegment[] {
+  if (segments.length <= 1) return segments;
+  
+  const merged: TranscriptSegment[] = [];
+  let current = { ...segments[0] };
+  
+  for (let i = 1; i < segments.length; i++) {
+    const next = segments[i];
+    const currentDuration = current.duration ?? 0;
+    const nextDuration = next.duration ?? 0;
+    const combinedDuration = currentDuration + nextDuration;
+    
+    // If combined duration is less than maxDuration, merge the segments
+    if (combinedDuration < maxDuration) {
+      current.text += " " + next.text;
+      current.duration = combinedDuration;
+      // Keep the offset of the first segment
+    } else {
+      // Push current merged segment and start new one
+      merged.push(current);
+      current = { ...next };
+    }
+  }
+  
+  // Don't forget to add the last segment
+  merged.push(current);
+  
+  return merged;
+}
+
 // Singleton Innertube client to avoid re-initialization per request
 let ytClient: Innertube | null = null;
 async function getYTClient(): Promise<Innertube> {
@@ -127,7 +160,7 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptResult
 
     return {
       success: true,
-      transcript,
+      transcript: mergeShortSegments(transcript, 5),
       videoId
     };
 
