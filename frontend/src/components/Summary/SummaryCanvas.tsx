@@ -34,8 +34,10 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchi
   const openInEditor = () => {
     try {
       sessionStorage.setItem("summary:markdown", markdown || "");
+      sessionStorage.setItem("summary:videoId", videoId || "");
     } catch {}
-    window.location.href = "/editor";
+    const qp = videoId ? `?v=${encodeURIComponent(videoId)}` : "";
+    window.location.href = `/editor${qp}`;
   };
 
   const exportPdf = async () => {

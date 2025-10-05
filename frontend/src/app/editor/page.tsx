@@ -9,11 +9,20 @@ import { marked } from "marked";
 export default function EditorPage() {
   const [markdown, setMarkdown] = useState("");
   const [preview, setPreview] = useState(false);
+  const [videoId, setVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem("summary:markdown");
       if (saved) setMarkdown(saved);
+      const url = new URL(window.location.href);
+      const v = url.searchParams.get("v");
+      if (v) {
+        setVideoId(v);
+      } else {
+        const savedVid = sessionStorage.getItem("summary:videoId");
+        if (savedVid) setVideoId(savedVid);
+      }
     } catch {}
   }, []);
 
@@ -35,14 +44,14 @@ export default function EditorPage() {
       const res = await fetch("/api/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ markdown, filename: "editor-notes" })
+        body: JSON.stringify({ markdown, filename: videoId ? `summary-${videoId}` : "editor-notes" })
       });
       if (!res.ok) return;
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "editor-notes.pdf";
+      a.download = `${videoId ? `summary-${videoId}` : "editor-notes"}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch {}
