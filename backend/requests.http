@@ -4,8 +4,8 @@
 ### Variables
 @host = http://localhost
 @port = 4000
-@baseUrl = {{host}}:{{port}}
-# @baseUrl = https://study-material-backend.fly.dev
+# @baseUrl = {{host}}:{{port}}
+@baseUrl = https://study-material-backend.fly.dev
 @youtubeUrl = https://www.youtube.com/watch?v=SquU4Bpc73Y
 @language = en
 
