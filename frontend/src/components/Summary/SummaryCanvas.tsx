@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 
@@ -15,6 +15,14 @@ type Props = {
 export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchingSummary }: Props) {
   const canActions = useMemo(() => !!markdown && !fetchingSummary, [markdown, fetchingSummary]);
 
+  const [copying, setCopying] = useState(false);
+  const [copyOk, setCopyOk] = useState(false);
+  const [copyErr, setCopyErr] = useState<string | null>(null);
+
+  const [exporting, setExporting] = useState(false);
+  const [exportOk, setExportOk] = useState(false);
+  const [exportErr, setExportErr] = useState<string | null>(null);
+
   // Render HTML from the markdown directly (no typing animation)
   const renderedHTML = useMemo(() => {
     try {
@@ -26,34 +34,61 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchi
   }, [markdown]);
 
   const copyMarkdown = async () => {
+    setCopyErr(null);
+    setCopyOk(false);
+    setCopying(true);
     try {
       await navigator.clipboard.writeText(markdown || "");
-    } catch {}  
+      setCopyOk(true);
+      setTimeout(() => setCopyOk(false), 1500);
+    } catch (e) {
+      setCopyErr("Failed to copy");
+      setTimeout(() => setCopyErr(null), 2500);
+    } finally {
+      setCopying(false);
+    }
   };
 
   const openInEditor = () => {
     try {
       sessionStorage.setItem("summary:markdown", markdown || "");
+      sessionStorage.setItem("summary:videoId", videoId || "");
     } catch {}
-    window.location.href = "/editor";
+    const qp = videoId ? `?v=${encodeURIComponent(videoId)}` : "";
+    window.location.href = `/editor${qp}`;
   };
 
   const exportPdf = async () => {
+    setExportErr(null);
+    setExportOk(false);
+    setExporting(true);
     try {
       const res = await fetch("/api/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ markdown: markdown || "", filename: `summary-${videoId}` })
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        const msg = await res.text().catch(() => "");
+        throw new Error(msg || `Export failed (${res.status})`);
+      }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = `summary-${videoId}.pdf`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
-    } catch {}
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setExportOk(true);
+      setTimeout(() => setExportOk(false), 1500);
+    } catch (e) {
+      setExportErr(e instanceof Error ? e.message : "Failed to export PDF");
+      setTimeout(() => setExportErr(null), 3000);
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (!open) return null;
@@ -67,22 +102,27 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchi
           <div className="flex items-center gap-2">
             <button
               onClick={copyMarkdown}
-              disabled={!canActions}
+              disabled={!canActions || copying}
               className="text-xs rounded-md border px-2 py-1 disabled:opacity-50"
               title="Copy as Markdown"
-            >Copy</button>
+            >{copying ? "Copying…" : copyOk ? "Copied" : "Copy"}</button>
+            {copyErr && <span className="text-[10px] text-red-600">{copyErr}</span>}
+
             <button
               onClick={openInEditor}
               disabled={!canActions}
               className="text-xs rounded-md border px-2 py-1 disabled:opacity-50"
               title="Open in Editor"
             >Open in Editor</button>
+
             <button
               onClick={exportPdf}
-              disabled={!canActions}
+              disabled={!canActions || exporting}
               className="text-xs rounded-md border px-2 py-1 disabled:opacity-50"
               title="Export to PDF"
-            >Export PDF</button>
+            >{exporting ? "Exporting…" : exportOk ? "Exported" : "Export PDF"}</button>
+            {exportErr && <span className="text-[10px] text-red-600">{exportErr}</span>}
+
             <button onClick={onClose} className="text-xs rounded-md border px-2 py-1">Close</button>
           </div>
         </div>
