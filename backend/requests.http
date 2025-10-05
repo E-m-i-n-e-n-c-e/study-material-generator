@@ -3,8 +3,9 @@
 
 ### Variables
 @host = http://localhost
-@port = 8080
-@baseUrl = https://study-material-backend.fly.dev
+@port = 4000
+@baseUrl = {{host}}:{{port}}
+# @baseUrl = https://study-material-backend.fly.dev
 @youtubeUrl = https://www.youtube.com/watch?v=SquU4Bpc73Y
 @language = en
 
@@ -57,4 +58,14 @@ POST {{baseUrl}}/api/process
 Content-Type: application/json
 
 {
+}
+
+
+### Generate PDF from Markdown
+POST {{baseUrl}}/api/pdf
+Content-Type: application/json
+
+{
+  "markdown": "# Demo Notes\n\n- Point A\n- Point B\n\n**Bold test**",
+  "filename": "demo-notes"
 }

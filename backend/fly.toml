@@ -5,6 +5,7 @@ primary_region = "bom"
 [env]
   # The app uses PORT from the environment; Dockerfile sets PORT=8080
   NODE_ENV = "production"
+  PORT = 8080
 
 # Machines platform HTTP service
 [http_service]
@@ -23,4 +24,5 @@ primary_region = "bom"
   cpu_kind = "shared"
   cpus = 1
   memory_mb = 512
+
 
