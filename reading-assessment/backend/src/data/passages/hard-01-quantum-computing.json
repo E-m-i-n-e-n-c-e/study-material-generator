@@ -1,0 +1,68 @@
+{
+  "id": "hard-01",
+  "title": "Quantum Computing: A Paradigm Shift",
+  "category": "Technology",
+  "difficulty": "hard",
+  "text": "Quantum computing represents a fundamental departure from classical computing paradigms, leveraging principles of quantum mechanics to process information in ways that conventional computers cannot replicate. Unlike classical bits, which exist in definite states of either 0 or 1, quantum bits or 'qubits' can exist in superposition—simultaneously representing multiple states until measured. This property, combined with quantum entanglement, where qubits become correlated such that the state of one instantaneously influences another regardless of distance, enables quantum computers to perform certain calculations exponentially faster than their classical counterparts. The concept originated in the early 1980s when physicist Richard Feynman proposed that quantum systems could simulate other quantum systems more efficiently than classical computers. Since then, researchers have developed various qubit implementations, including superconducting circuits, trapped ions, and topological qubits, each with distinct advantages and challenges. Quantum computers excel at specific problems such as factoring large numbers, optimizing complex systems, and simulating molecular interactions for drug discovery. However, significant obstacles remain, particularly quantum decoherence—the tendency of qubits to lose their quantum properties when interacting with their environment—and the need for extreme operating conditions, such as temperatures near absolute zero. Error correction in quantum systems requires substantially more physical qubits than logical qubits, presenting scaling challenges. Despite these hurdles, recent breakthroughs in quantum error correction and the achievement of 'quantum supremacy' by demonstrating calculations impossible for classical computers have reinvigorated the field. Companies like IBM, Google, and emerging startups are racing to develop practical quantum computers that could revolutionize fields ranging from cryptography to materials science, potentially ushering in a new era of computational capability.",
+  "wordCount": 274,
+  "idealWPM": 300,
+  "estimatedReadingTime": 55,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What is the key difference between classical bits and qubits?",
+      "options": [
+        "Qubits are larger in size",
+        "Qubits can exist in superposition, representing multiple states simultaneously",
+        "Qubits are more expensive to produce",
+        "Qubits only work at room temperature"
+      ],
+      "answer": "Qubits can exist in superposition, representing multiple states simultaneously"
+    },
+    {
+      "id": "q2",
+      "stem": "Who proposed that quantum systems could simulate other quantum systems more efficiently?",
+      "options": ["Albert Einstein", "Stephen Hawking", "Richard Feynman", "Niels Bohr"],
+      "answer": "Richard Feynman"
+    },
+    {
+      "id": "q3",
+      "stem": "What is quantum decoherence?",
+      "options": [
+        "The process of measuring quantum states",
+        "The tendency of qubits to lose their quantum properties when interacting with their environment",
+        "A method for improving quantum computer speed",
+        "The entanglement of multiple qubits"
+      ],
+      "answer": "The tendency of qubits to lose their quantum properties when interacting with their environment"
+    },
+    {
+      "id": "q4",
+      "stem": "Which of the following is NOT mentioned as a qubit implementation?",
+      "options": ["Superconducting circuits", "Trapped ions", "Photonic crystals", "Topological qubits"],
+      "answer": "Photonic crystals"
+    },
+    {
+      "id": "q5",
+      "stem": "What temperature conditions do quantum computers typically require?",
+      "options": [
+        "Room temperature",
+        "Moderately cool temperatures",
+        "Temperatures near absolute zero",
+        "Extremely high temperatures"
+      ],
+      "answer": "Temperatures near absolute zero"
+    },
+    {
+      "id": "q6",
+      "stem": "What does quantum entanglement enable?",
+      "options": [
+        "Qubits to operate at higher temperatures",
+        "Qubits to become correlated such that one instantaneously influences another",
+        "Classical computers to run quantum algorithms",
+        "Reduction in error rates"
+      ],
+      "answer": "Qubits to become correlated such that one instantaneously influences another"
+    }
+  ]
+}

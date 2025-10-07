@@ -1,0 +1,52 @@
+{
+  "id": "medium-01",
+  "title": "Understanding Black Holes",
+  "category": "Science",
+  "difficulty": "medium",
+  "text": "Black holes are among the most fascinating and mysterious objects in the universe. Formed when massive stars collapse at the end of their life cycles, these cosmic phenomena possess gravitational fields so intense that nothing, not even light, can escape once it crosses the event horizon—the boundary surrounding a black hole. The concept of black holes was first theorized by Albert Einstein's general theory of relativity in 1915, though the term 'black hole' wasn't coined until 1967 by physicist John Wheeler. At the center of a black hole lies the singularity, a point where matter is compressed to infinite density and the laws of physics as we know them break down. Black holes come in various sizes: stellar black holes, which form from individual stars, can be several times the mass of our Sun, while supermassive black holes, found at the centers of galaxies, can contain millions or even billions of solar masses. Despite being invisible, astronomers detect black holes by observing their effects on nearby matter and radiation. Recent technological advances, including the Event Horizon Telescope, have even allowed scientists to capture the first direct image of a black hole's shadow, opening new frontiers in our understanding of these enigmatic cosmic entities.",
+  "wordCount": 207,
+  "idealWPM": 275,
+  "estimatedReadingTime": 45,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What is the event horizon of a black hole?",
+      "options": [
+        "The center point of the black hole",
+        "The boundary beyond which nothing can escape",
+        "The outer edge of a galaxy",
+        "A type of radiation emitted by black holes"
+      ],
+      "answer": "The boundary beyond which nothing can escape"
+    },
+    {
+      "id": "q2",
+      "stem": "Who coined the term 'black hole'?",
+      "options": ["Albert Einstein", "Stephen Hawking", "John Wheeler", "Isaac Newton"],
+      "answer": "John Wheeler"
+    },
+    {
+      "id": "q3",
+      "stem": "What is located at the center of a black hole?",
+      "options": ["The event horizon", "A singularity", "A neutron star", "Empty space"],
+      "answer": "A singularity"
+    },
+    {
+      "id": "q4",
+      "stem": "How do astronomers detect black holes if they are invisible?",
+      "options": [
+        "By their color",
+        "By observing their effects on nearby matter and radiation",
+        "Through direct visual observation",
+        "By measuring their temperature"
+      ],
+      "answer": "By observing their effects on nearby matter and radiation"
+    },
+    {
+      "id": "q5",
+      "stem": "What type of black holes are found at the centers of galaxies?",
+      "options": ["Stellar black holes", "Micro black holes", "Supermassive black holes", "Quantum black holes"],
+      "answer": "Supermassive black holes"
+    }
+  ]
+}
