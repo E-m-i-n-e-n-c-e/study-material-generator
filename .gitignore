@@ -29,3 +29,10 @@ dist
 # Logs
 logs
 *.log
+
+# Vite build
+.vite
+
+# CLAUDE.md
+./CLAUDE.md
+.claude

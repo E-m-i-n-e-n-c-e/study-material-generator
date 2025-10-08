@@ -4,6 +4,7 @@ import easy03 from './passages/easy-03-renewable-energy.json';
 import medium01 from './passages/medium-01-black-holes.json';
 import medium02 from './passages/medium-02-internet-history.json';
 import hard01 from './passages/hard-01-quantum-computing.json';
+import { getModuleById } from './modules';
 
 export interface Question {
   id: string;
@@ -49,4 +50,33 @@ export const getRandomPassage = (difficulty?: 'easy' | 'medium' | 'hard'): Passa
   const pool = difficulty ? getPassagesByDifficulty(difficulty) : passages;
   const randomIndex = Math.floor(Math.random() * pool.length);
   return pool[randomIndex];
+};
+
+export const getPassageByModuleAndDifficulty = (
+  moduleId: string,
+  difficulty: 'easy' | 'medium' | 'hard'
+): Passage | null => {
+  const module = getModuleById(moduleId);
+
+  if (!module) {
+    return null;
+  }
+
+  // Check if the module has the requested difficulty
+  if (!module.difficulties.includes(difficulty)) {
+    return null;
+  }
+
+  // Filter passages that belong to this module and match the difficulty
+  const matchingPassages = passages.filter(
+    p => module.passageIds.includes(p.id) && p.difficulty === difficulty
+  );
+
+  if (matchingPassages.length === 0) {
+    return null;
+  }
+
+  // Return random passage from matching set
+  const randomIndex = Math.floor(Math.random() * matchingPassages.length);
+  return matchingPassages[randomIndex];
 };

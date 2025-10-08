@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import {
-  getAssessment,
-  getPassages,
-  getPassageByIdController,
+  getModules,
   getRandomPassageController,
   submitAssessment
 } from '../controllers/assessmentController';
@@ -10,10 +8,8 @@ import {
 const router = Router();
 
 // Route definitions
-router.get('/assessment', getAssessment);
-router.get('/passages', getPassages);
-router.get('/passage/:id', getPassageByIdController);  // Not needed 
-router.get('/passage/random', getRandomPassageController);
-router.post('/submit', submitAssessment);  // Works
+router.get('/modules', getModules);                      // Get list of available modules
+router.post('/passage/random', getRandomPassageController);  // Get random passage by module + difficulty
+router.post('/submit', submitAssessment);                // Submit assessment answers
 
 export default router;

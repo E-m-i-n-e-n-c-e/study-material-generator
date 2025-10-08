@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import assessmentData from '../data/assessmentData.json';
-import { passages, getPassageById, getRandomPassage, Passage } from '../data/passagesIndex';
+import { getPassageById, getPassageByModuleAndDifficulty, Passage } from '../data/passagesIndex';
+import { getModulesList } from '../data/modules';
 
 // Types
 interface Question {
@@ -74,112 +75,49 @@ function generateFeedback(metrics: Metrics, idealWPM: number, actualWPM: number)
 }
 
 /**
- * GET /api/assessment
- * Fetch the reading passage and quiz data
+ * GET /api/modules
+ * Get all available modules with their metadata
  */
-export const getAssessment = (_req: Request, res: Response) => {
+export const getModules = (_req: Request, res: Response) => {
   try {
-    // Return assessment data without the correct answers
-    const { id, title, text, wordCount, difficulty, questions } = assessmentData as AssessmentData;
-
-    // Remove correct answers from questions before sending to frontend
-    const sanitizedQuestions = questions.map(({ id, stem, options }) => ({
-      id,
-      stem,
-      options
-    }));
-
+    const modules = getModulesList();
     res.json({
-      id,
-      title,
-      text,
-      wordCount,
-      difficulty,
-      questions: sanitizedQuestions
+      modules,
+      total: modules.length
     });
   } catch (error) {
-    console.error('Error fetching assessment:', error);
-    res.status(500).json({ error: 'Failed to fetch assessment data' });
+    console.error('Error fetching modules:', error);
+    res.status(500).json({ error: 'Failed to fetch modules list' });
   }
 };
 
 /**
- * GET /api/passages
- * Get all available passages with metadata
- */
-export const getPassages = (_req: Request, res: Response) => {
-  try {
-    // Return passage list without the full text and correct answers
-    const passageList = passages.map(({ id, title, category, difficulty, wordCount, estimatedReadingTime }) => ({
-      id,
-      title,
-      category,
-      difficulty,
-      wordCount,
-      estimatedReadingTime
-    }));
-
-    res.json({
-      passages: passageList,
-      total: passageList.length
-    });
-  } catch (error) {
-    console.error('Error fetching passages:', error);
-    res.status(500).json({ error: 'Failed to fetch passages list' });
-  }
-};
-
-/**
- * GET /api/passage/:id
- * Get a specific passage by ID
- */
-export const getPassageByIdController = (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const passage = getPassageById(id);
-
-    if (!passage) {
-      return res.status(404).json({ error: 'Passage not found' });
-    }
-
-    // Remove correct answers from questions
-    const sanitizedQuestions = passage.questions.map(({ id, stem, options }) => ({
-      id,
-      stem,
-      options
-    }));
-
-    res.json({
-      id: passage.id,
-      title: passage.title,
-      category: passage.category,
-      difficulty: passage.difficulty,
-      text: passage.text,
-      wordCount: passage.wordCount,
-      idealWPM: passage.idealWPM,
-      estimatedReadingTime: passage.estimatedReadingTime,
-      questions: sanitizedQuestions
-    });
-  } catch (error) {
-    console.error('Error fetching passage:', error);
-    res.status(500).json({ error: 'Failed to fetch passage' });
-  }
-};
-
-/**
- * GET /api/passage/random
- * Get a random passage, optionally filtered by difficulty
+ * POST /api/passage/random
+ * Get a random passage by module and difficulty
  */
 export const getRandomPassageController = (req: Request, res: Response) => {
   try {
-    const difficulty = req.query.difficulty as 'easy' | 'medium' | 'hard' | undefined;
+    const { module, difficulty } = req.body;
 
-    // Validate difficulty if provided
-    if (difficulty && !['easy', 'medium', 'hard'].includes(difficulty)) {
+    // Validate required fields
+    if (!module || !difficulty) {
+      return res.status(400).json({
+        error: 'Both module and difficulty are required'
+      });
+    }
+
+    // Validate difficulty
+    if (!['easy', 'medium', 'hard'].includes(difficulty)) {
       return res.status(400).json({ error: 'Invalid difficulty level' });
     }
 
-    const passage = getRandomPassage(difficulty);
+    const passage = getPassageByModuleAndDifficulty(module, difficulty);
+
+    if (!passage) {
+      return res.status(404).json({
+        error: 'No passage found for the specified module and difficulty'
+      });
+    }
 
     // Remove correct answers from questions
     const sanitizedQuestions = passage.questions.map(({ id, stem, options }) => ({
