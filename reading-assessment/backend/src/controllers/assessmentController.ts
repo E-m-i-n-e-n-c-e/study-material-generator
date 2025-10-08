@@ -1,8 +1,6 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import assessmentData from '../data/assessmentData.json';
 import { passages, getPassageById, getRandomPassage, Passage } from '../data/passagesIndex';
-
-const router = Router();
 
 // Types
 interface Question {
@@ -41,36 +39,6 @@ interface Metrics {
 }
 
 /**
- * GET /api/assessment
- * Fetch the reading passage and quiz data
- */
-router.get('/assessment', (_req: Request, res: Response) => {
-  try {
-    // Return assessment data without the correct answers
-    const { id, title, text, wordCount, difficulty, questions } = assessmentData as AssessmentData;
-
-    // Remove correct answers from questions before sending to frontend
-    const sanitizedQuestions = questions.map(({ id, stem, options }) => ({
-      id,
-      stem,
-      options
-    }));
-
-    res.json({
-      id,
-      title,
-      text,
-      wordCount,
-      difficulty,
-      questions: sanitizedQuestions
-    });
-  } catch (error) {
-    console.error('Error fetching assessment:', error);
-    res.status(500).json({ error: 'Failed to fetch assessment data' });
-  }
-});
-
-/**
  * Generate personalized feedback based on metrics
  */
 function generateFeedback(metrics: Metrics, idealWPM: number, actualWPM: number): string {
@@ -106,10 +74,40 @@ function generateFeedback(metrics: Metrics, idealWPM: number, actualWPM: number)
 }
 
 /**
+ * GET /api/assessment
+ * Fetch the reading passage and quiz data
+ */
+export const getAssessment = (_req: Request, res: Response) => {
+  try {
+    // Return assessment data without the correct answers
+    const { id, title, text, wordCount, difficulty, questions } = assessmentData as AssessmentData;
+
+    // Remove correct answers from questions before sending to frontend
+    const sanitizedQuestions = questions.map(({ id, stem, options }) => ({
+      id,
+      stem,
+      options
+    }));
+
+    res.json({
+      id,
+      title,
+      text,
+      wordCount,
+      difficulty,
+      questions: sanitizedQuestions
+    });
+  } catch (error) {
+    console.error('Error fetching assessment:', error);
+    res.status(500).json({ error: 'Failed to fetch assessment data' });
+  }
+};
+
+/**
  * GET /api/passages
  * Get all available passages with metadata
  */
-router.get('/passages', (_req: Request, res: Response) => {
+export const getPassages = (_req: Request, res: Response) => {
   try {
     // Return passage list without the full text and correct answers
     const passageList = passages.map(({ id, title, category, difficulty, wordCount, estimatedReadingTime }) => ({
@@ -129,13 +127,13 @@ router.get('/passages', (_req: Request, res: Response) => {
     console.error('Error fetching passages:', error);
     res.status(500).json({ error: 'Failed to fetch passages list' });
   }
-});
+};
 
 /**
  * GET /api/passage/:id
  * Get a specific passage by ID
  */
-router.get('/passage/:id', (req: Request, res: Response) => {
+export const getPassageByIdController = (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const passage = getPassageById(id);
@@ -166,13 +164,13 @@ router.get('/passage/:id', (req: Request, res: Response) => {
     console.error('Error fetching passage:', error);
     res.status(500).json({ error: 'Failed to fetch passage' });
   }
-});
+};
 
 /**
  * GET /api/passage/random
  * Get a random passage, optionally filtered by difficulty
  */
-router.get('/passage/random', (req: Request, res: Response) => {
+export const getRandomPassageController = (req: Request, res: Response) => {
   try {
     const difficulty = req.query.difficulty as 'easy' | 'medium' | 'hard' | undefined;
 
@@ -205,13 +203,13 @@ router.get('/passage/random', (req: Request, res: Response) => {
     console.error('Error fetching random passage:', error);
     res.status(500).json({ error: 'Failed to fetch random passage' });
   }
-});
+};
 
 /**
  * POST /api/submit - Enhanced version
  * Calculate metrics and return detailed results including answer review
  */
-router.post('/submit', (req: Request, res: Response) => {
+export const submitAssessment = (req: Request, res: Response) => {
   try {
     const { passageId, readingTimeSeconds, answers } = req.body as SubmitRequest;
 
@@ -294,6 +292,4 @@ router.post('/submit', (req: Request, res: Response) => {
     console.error('Error processing submission:', error);
     res.status(500).json({ error: 'Failed to process submission' });
   }
-});
-
-export default router;
+};

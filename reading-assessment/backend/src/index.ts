@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import assessmentRoutes from './routes/assessment';
+import assessmentRoutes from './routes/assessmentRoute';
 
 const app = express();
 const PORT = process.env.PORT || 4001;
