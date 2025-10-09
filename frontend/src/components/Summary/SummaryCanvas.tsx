@@ -63,7 +63,7 @@ export default function SummaryCanvas({ open, onClose, videoId, markdown, fetchi
     setExportOk(false);
     setExporting(true);
     try {
-      const res = await fetch("/api/pdf", {
+      const res = await fetch("/api/yt-study/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ markdown: markdown || "", filename: `summary-${videoId}` })
