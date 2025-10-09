@@ -1,0 +1,52 @@
+{
+  "id": "easy-04",
+  "title": "The Solar System Basics",
+  "category": "Physical Sciences",
+  "difficulty": "easy",
+  "text": "Our solar system consists of the Sun and all the objects that orbit around it, including eight planets, their moons, asteroids, and comets. The Sun, a massive star at the center, provides light and heat that makes life on Earth possible. The planets are divided into two main groups: the inner planets and the outer planets. The four inner planets—Mercury, Venus, Earth, and Mars—are rocky and relatively small. Mercury is closest to the Sun and has extreme temperature changes. Venus is the hottest planet due to its thick atmosphere. Earth is the only planet known to support life, thanks to its perfect distance from the Sun and abundant water. Mars, known as the red planet, has the largest volcano in the solar system. The four outer planets—Jupiter, Saturn, Uranus, and Neptune—are much larger and made mostly of gas and ice. Jupiter is the largest planet with a famous red spot storm. Saturn is known for its beautiful rings made of ice and rock particles. Between Mars and Jupiter lies the asteroid belt, containing thousands of rocky objects. Understanding our solar system helps us appreciate Earth's unique position and the conditions that make life possible.",
+  "wordCount": 192,
+  "idealWPM": 250,
+  "estimatedReadingTime": 46,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "How many planets are in our solar system?",
+      "options": ["Seven", "Eight", "Nine", "Ten"],
+      "answer": "Eight"
+    },
+    {
+      "id": "q2",
+      "stem": "Which planet is known as the red planet?",
+      "options": ["Venus", "Mercury", "Mars", "Jupiter"],
+      "answer": "Mars"
+    },
+    {
+      "id": "q3",
+      "stem": "What makes Earth unique among the planets?",
+      "options": [
+        "It's the largest planet",
+        "It's the closest to the Sun",
+        "It's the only planet known to support life",
+        "It has the most moons"
+      ],
+      "answer": "It's the only planet known to support life"
+    },
+    {
+      "id": "q4",
+      "stem": "Which planet is famous for its rings?",
+      "options": ["Jupiter", "Saturn", "Uranus", "Neptune"],
+      "answer": "Saturn"
+    },
+    {
+      "id": "q5",
+      "stem": "Where is the asteroid belt located?",
+      "options": [
+        "Between Earth and Mars",
+        "Between Mars and Jupiter", 
+        "Between Jupiter and Saturn",
+        "Beyond Neptune"
+      ],
+      "answer": "Between Mars and Jupiter"
+    }
+  ]
+}

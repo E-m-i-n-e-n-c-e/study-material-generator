@@ -1,0 +1,78 @@
+{
+  "id": "hard-04",
+  "title": "Quantum Mechanics and Wave-Particle Duality",
+  "category": "Physical Sciences", 
+  "difficulty": "hard",
+  "text": "Quantum mechanics fundamentally challenges our classical understanding of reality by revealing that matter and energy exhibit both wave-like and particle-like properties depending on the experimental context—a phenomenon known as wave-particle duality. This counterintuitive principle emerged from early 20th-century experiments that classical physics could not adequately explain. The photoelectric effect, for which Albert Einstein received the Nobel Prize, demonstrated that light behaves as discrete packets of energy called photons, contradicting the purely wave-like description of electromagnetic radiation. Conversely, Louis de Broglie proposed that particles could exhibit wave-like properties, with wavelength inversely proportional to momentum—a hypothesis later confirmed through electron diffraction experiments. The famous double-slit experiment epitomizes this duality: when electrons or photons pass through two closely spaced slits, they create an interference pattern characteristic of waves, yet when detected, they register as discrete particles at specific locations. Even more mysteriously, the mere act of observation seems to determine whether quantum objects behave as waves or particles. This measurement problem led to various interpretations of quantum mechanics, from the Copenhagen interpretation's probabilistic collapse to many-worlds theory's parallel universes. Werner Heisenberg's uncertainty principle further revealed fundamental limits to simultaneous knowledge of complementary properties like position and momentum, suggesting that reality at quantum scales is inherently probabilistic rather than deterministic. These quantum effects, though negligible at macroscopic scales, become dominant at atomic and subatomic levels, governing chemical bonding, semiconductor behavior, and enabling technologies like lasers, MRI machines, and quantum computers. The philosophical implications continue to provoke debate about the nature of reality, measurement, and the role of consciousness in physical phenomena.",
+  "wordCount": 276,
+  "idealWPM": 300,
+  "estimatedReadingTime": 55,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What is wave-particle duality?",
+      "options": [
+        "The idea that waves and particles are completely separate phenomena",
+        "The principle that matter and energy exhibit both wave-like and particle-like properties",
+        "A mathematical equation describing particle motion",
+        "The theory that all matter is made of waves"
+      ],
+      "answer": "The principle that matter and energy exhibit both wave-like and particle-like properties"
+    },
+    {
+      "id": "q2",
+      "stem": "What did the photoelectric effect demonstrate?",
+      "options": [
+        "Light always behaves as a wave",
+        "Electrons have no mass",
+        "Light behaves as discrete packets of energy called photons",
+        "Energy cannot be created or destroyed"
+      ],
+      "answer": "Light behaves as discrete packets of energy called photons"
+    },
+    {
+      "id": "q3",
+      "stem": "Who proposed that particles could exhibit wave-like properties?",
+      "options": [
+        "Albert Einstein",
+        "Werner Heisenberg",
+        "Louis de Broglie",
+        "Niels Bohr"
+      ],
+      "answer": "Louis de Broglie"
+    },
+    {
+      "id": "q4",
+      "stem": "What does Heisenberg's uncertainty principle state?",
+      "options": [
+        "Particles always move in straight lines",
+        "Energy and matter are equivalent",
+        "There are fundamental limits to simultaneous knowledge of complementary properties",
+        "Quantum effects only occur in large objects"
+      ],
+      "answer": "There are fundamental limits to simultaneous knowledge of complementary properties"
+    },
+    {
+      "id": "q5",
+      "stem": "What is mysterious about the double-slit experiment?",
+      "options": [
+        "Particles move faster than light",
+        "The act of observation seems to determine whether objects behave as waves or particles",
+        "Electrons can pass through solid barriers",
+        "Multiple particles can occupy the same space"
+      ],
+      "answer": "The act of observation seems to determine whether objects behave as waves or particles"
+    },
+    {
+      "id": "q6",
+      "stem": "Which technology is NOT mentioned as being enabled by quantum effects?",
+      "options": [
+        "Lasers",
+        "MRI machines", 
+        "Solar panels",
+        "Quantum computers"
+      ],
+      "answer": "Solar panels"
+    }
+  ]
+}

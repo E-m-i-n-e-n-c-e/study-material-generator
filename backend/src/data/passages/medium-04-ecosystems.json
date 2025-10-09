@@ -1,0 +1,56 @@
+{
+  "id": "medium-04",
+  "title": "Ecosystems and Biodiversity",
+  "category": "Life Sciences",
+  "difficulty": "medium",
+  "text": "Ecosystems represent complex networks of interconnected organisms and their physical environment, functioning as integrated units where energy flows and nutrients cycle continuously. These biological communities range from microscopic soil ecosystems to vast biomes like tropical rainforests and ocean systems. Biodiversity within ecosystems operates at multiple levels: genetic diversity within species, species diversity within communities, and ecosystem diversity across landscapes. This biological richness provides essential ecosystem services that humans depend upon, including pollination, water purification, climate regulation, and soil formation. Keystone species play disproportionately important roles in maintaining ecosystem structure—removing a keystone species can trigger cascading effects throughout the entire system. For example, wolves in Yellowstone National Park control deer populations, which in turn affects vegetation growth and stream erosion patterns. Food webs illustrate these complex interdependencies, showing how energy transfers from primary producers through various consumer levels. However, human activities increasingly threaten ecosystem stability through habitat destruction, pollution, climate change, and invasive species introduction. Conservation biology has emerged as a critical field addressing these challenges through protected area designation, restoration projects, and sustainable management practices. Understanding ecosystem dynamics is essential for maintaining the ecological foundation that supports all life on Earth, as biodiversity loss can irreversibly alter ecosystem function and resilience.",
+  "wordCount": 207,
+  "idealWPM": 275,
+  "estimatedReadingTime": 45,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What are the three levels of biodiversity mentioned in the passage?",
+      "options": [
+        "Plant, animal, and microbial diversity",
+        "Genetic, species, and ecosystem diversity", 
+        "Local, regional, and global diversity",
+        "Terrestrial, aquatic, and atmospheric diversity"
+      ],
+      "answer": "Genetic, species, and ecosystem diversity"
+    },
+    {
+      "id": "q2",
+      "stem": "What is a keystone species?",
+      "options": [
+        "The most abundant species in an ecosystem",
+        "A species that has a disproportionately important role in maintaining ecosystem structure",
+        "The largest predator in a food chain",
+        "A species that produces the most offspring"
+      ],
+      "answer": "A species that has a disproportionately important role in maintaining ecosystem structure"
+    },
+    {
+      "id": "q3",
+      "stem": "Which ecosystem service is NOT mentioned in the passage?",
+      "options": [
+        "Pollination",
+        "Water purification",
+        "Mineral extraction",
+        "Climate regulation"
+      ],
+      "answer": "Mineral extraction"
+    },
+    {
+      "id": "q4",
+      "stem": "What example is given to illustrate keystone species effects?",
+      "options": [
+        "Bees pollinating flowers",
+        "Trees producing oxygen",
+        "Wolves controlling deer populations in Yellowstone",
+        "Fish maintaining water quality"
+      ],
+      "answer": "Wolves controlling deer populations in Yellowstone"
+    }
+  ]
+}

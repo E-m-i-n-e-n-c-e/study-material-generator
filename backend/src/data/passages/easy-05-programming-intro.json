@@ -1,0 +1,67 @@
+{
+  "id": "easy-05",
+  "title": "Introduction to Programming",
+  "category": "Technology",
+  "difficulty": "easy",
+  "text": "Computer programming is the process of creating instructions that tell a computer what to do. These instructions are written in special languages called programming languages, such as Python, Java, or JavaScript. Just like humans use different languages to communicate, programmers use different programming languages depending on what they want to build. A program is simply a set of step-by-step instructions that solve a problem or perform a task. For example, a simple program might calculate the sum of two numbers or display a message on the screen. Programming involves breaking down complex problems into smaller, manageable pieces—a skill called problem-solving. Programmers use tools called text editors or integrated development environments (IDEs) to write their code. Once the code is written, it must be tested to make sure it works correctly. If there are errors, called bugs, programmers must find and fix them through a process called debugging. Programming is used everywhere in our modern world: from the apps on your phone to the systems that control traffic lights, from video games to online shopping websites. Learning to program helps develop logical thinking and problem-solving skills that are valuable in many areas of life, not just technology careers.",
+  "wordCount": 192,
+  "idealWPM": 250,
+  "estimatedReadingTime": 46,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What is computer programming?",
+      "options": [
+        "Fixing broken computers",
+        "Creating instructions that tell a computer what to do",
+        "Designing computer hardware",
+        "Managing computer networks"
+      ],
+      "answer": "Creating instructions that tell a computer what to do"
+    },
+    {
+      "id": "q2",
+      "stem": "What are bugs in programming?",
+      "options": [
+        "Insects that damage computers",
+        "Viruses that infect programs",
+        "Errors in the code",
+        "Slow internet connections"
+      ],
+      "answer": "Errors in the code"
+    },
+    {
+      "id": "q3",
+      "stem": "Which skill is mentioned as important for programming?",
+      "options": [
+        "Artistic ability",
+        "Problem-solving",
+        "Physical strength",
+        "Musical talent"
+      ],
+      "answer": "Problem-solving"
+    },
+    {
+      "id": "q4",
+      "stem": "What is an IDE?",
+      "options": [
+        "A type of programming language",
+        "A computer virus",
+        "An integrated development environment",
+        "A debugging technique"
+      ],
+      "answer": "An integrated development environment"
+    },
+    {
+      "id": "q5",
+      "stem": "According to the passage, where is programming used?",
+      "options": [
+        "Only in video games",
+        "Only in mobile apps",
+        "Everywhere in our modern world",
+        "Only in large corporations"
+      ],
+      "answer": "Everywhere in our modern world"
+    }
+  ]
+}

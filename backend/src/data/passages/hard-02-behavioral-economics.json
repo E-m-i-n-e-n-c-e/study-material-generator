@@ -1,0 +1,67 @@
+{
+  "id": "hard-02",
+  "title": "Behavioral Economics and Decision-Making",
+  "category": "Economics",
+  "difficulty": "hard", 
+  "text": "Behavioral economics represents a paradigmatic shift from traditional economic theory, integrating psychological insights to understand how people actually make decisions rather than how they should make them according to rational choice theory. Classical economics assumes individuals are rational actors who maximize utility with perfect information and unlimited cognitive capacity. However, decades of research by pioneers like Daniel Kahneman and Amos Tversky have revealed systematic deviations from rationality. Prospect theory, one of behavioral economics' cornerstone contributions, demonstrates that people evaluate potential losses and gains asymmetrically—losses loom larger than equivalent gains, a phenomenon known as loss aversion. This finding explains why individuals often reject mathematically favorable bets and why consumers resist switching from default options. Cognitive biases further complicate decision-making: anchoring bias causes people to rely heavily on the first piece of information encountered, while confirmation bias leads to selective interpretation of evidence that supports preexisting beliefs. The availability heuristic makes recent or memorable events seem more probable than statistical reality suggests. These insights have profound implications for policy design, marketing strategies, and financial markets. Nudge theory, developed by Richard Thaler, leverages these behavioral tendencies to guide people toward better choices without restricting options—exemplified by automatic enrollment in retirement savings plans or strategic placement of healthy foods in cafeterias. Behavioral economics has transformed fields from public policy to corporate strategy, revealing that understanding human psychology is crucial for effective economic analysis and intervention design.",
+  "wordCount": 242,
+  "idealWPM": 300,
+  "estimatedReadingTime": 48,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What is the main difference between traditional economics and behavioral economics?",
+      "options": [
+        "Behavioral economics focuses only on business decisions",
+        "Traditional economics uses mathematical models while behavioral economics does not",
+        "Behavioral economics integrates psychology to understand actual decision-making vs. rational choice theory",
+        "Behavioral economics only studies individual consumers"
+      ],
+      "answer": "Behavioral economics integrates psychology to understand actual decision-making vs. rational choice theory"
+    },
+    {
+      "id": "q2",
+      "stem": "What does loss aversion mean in prospect theory?",
+      "options": [
+        "People prefer certain gains to uncertain ones",
+        "Losses feel more significant than equivalent gains",
+        "People avoid all risky investments",
+        "Individuals always choose the safest option"
+      ],
+      "answer": "Losses feel more significant than equivalent gains"
+    },
+    {
+      "id": "q3",
+      "stem": "Who developed nudge theory?",
+      "options": [
+        "Daniel Kahneman",
+        "Amos Tversky", 
+        "Richard Thaler",
+        "Adam Smith"
+      ],
+      "answer": "Richard Thaler"
+    },
+    {
+      "id": "q4",
+      "stem": "What is anchoring bias?",
+      "options": [
+        "The tendency to avoid making decisions",
+        "Relying heavily on the first piece of information encountered",
+        "Preferring familiar options over new ones",
+        "Making decisions based on emotions rather than logic"
+      ],
+      "answer": "Relying heavily on the first piece of information encountered"
+    },
+    {
+      "id": "q5",
+      "stem": "Which of the following is an example of nudge theory in practice?",
+      "options": [
+        "Mandatory retirement savings contributions",
+        "Automatic enrollment in retirement savings plans",
+        "Eliminating all investment options",
+        "Requiring financial advisors for all decisions"
+      ],
+      "answer": "Automatic enrollment in retirement savings plans"
+    }
+  ]
+}

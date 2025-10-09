@@ -1,0 +1,56 @@
+{
+  "id": "medium-03",
+  "title": "Market Economics and Competition",
+  "category": "Economics", 
+  "difficulty": "medium",
+  "text": "Market competition forms the backbone of modern economic systems, influencing everything from pricing strategies to innovation cycles. In perfectly competitive markets, numerous buyers and sellers interact with homogeneous products, where no single entity can influence market prices—a theoretical ideal rarely achieved in reality. More commonly, markets exhibit various degrees of imperfect competition. Monopolistic competition features many sellers offering differentiated products, allowing for some price control through brand loyalty and product uniqueness. Oligopolies, characterized by a few large firms dominating the market, often engage in strategic decision-making where each company's actions significantly impact competitors. Pure monopolies, though rare due to antitrust regulations, represent markets controlled by a single seller with substantial barriers to entry. These market structures profoundly affect consumer welfare, innovation incentives, and economic efficiency. Government intervention through antitrust laws, regulations, and competition policies aims to prevent market abuse while preserving the benefits of competitive forces. Understanding these dynamics helps explain phenomena like price wars, product differentiation strategies, and the role of barriers to entry in shaping industry landscapes. Modern digital markets have introduced new complexities, with network effects and platform economics creating winner-take-all scenarios that challenge traditional competition models.",
+  "wordCount": 191,
+  "idealWPM": 275,
+  "estimatedReadingTime": 42,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What characterizes a perfectly competitive market?",
+      "options": [
+        "A few large firms controlling the market",
+        "Numerous buyers and sellers with homogeneous products",
+        "One seller dominating the entire market",
+        "High barriers to entry for new competitors"
+      ],
+      "answer": "Numerous buyers and sellers with homogeneous products"
+    },
+    {
+      "id": "q2", 
+      "stem": "What is an oligopoly?",
+      "options": [
+        "A market with many small competitors",
+        "A market controlled by a single seller",
+        "A market dominated by a few large firms",
+        "A market with no competition"
+      ],
+      "answer": "A market dominated by a few large firms"
+    },
+    {
+      "id": "q3",
+      "stem": "Why do governments implement antitrust laws?",
+      "options": [
+        "To increase tax revenue",
+        "To prevent market abuse while preserving competitive benefits",
+        "To eliminate all forms of competition",
+        "To create monopolies in key industries"
+      ],
+      "answer": "To prevent market abuse while preserving competitive benefits"
+    },
+    {
+      "id": "q4",
+      "stem": "What is monopolistic competition?",
+      "options": [
+        "Competition between multiple monopolies",
+        "A market with many sellers offering differentiated products",
+        "A government-controlled market system",
+        "Competition based solely on price"
+      ],
+      "answer": "A market with many sellers offering differentiated products"
+    }
+  ]
+}

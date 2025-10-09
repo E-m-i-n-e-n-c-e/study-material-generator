@@ -1,0 +1,78 @@
+{
+  "id": "hard-03",
+  "title": "Genetic Engineering and CRISPR Technology",
+  "category": "Life Sciences",
+  "difficulty": "hard",
+  "text": "CRISPR-Cas9 technology has revolutionized genetic engineering by providing an unprecedented level of precision, efficiency, and accessibility for genome editing across diverse organisms. Originally discovered as an adaptive immune system in bacteria and archaea, CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) functions as molecular scissors that can cut DNA at specific locations guided by programmable RNA sequences. The system consists of two key components: guide RNA that identifies target DNA sequences, and the Cas9 enzyme that creates double-strand breaks at the specified location. This breakthrough, largely attributed to Jennifer Doudna and Emmanuelle Charpentier's pioneering work, has transformed numerous fields from basic research to clinical medicine. In agriculture, CRISPR enables development of crops with enhanced nutritional content, disease resistance, and climate adaptation without introducing foreign genes—addressing regulatory and consumer concerns about traditional GMOs. Medical applications include correcting genetic disorders through somatic cell editing, developing improved animal models for disease research, and creating CAR-T cell therapies for cancer treatment. However, the technology's power raises significant ethical considerations, particularly regarding germline editing that would create heritable changes. The 2018 controversy surrounding the birth of CRISPR-edited twins in China highlighted the need for robust international governance frameworks. Off-target effects, where unintended genomic locations are modified, remain a technical challenge requiring continued refinement of targeting specificity. Additionally, delivery mechanisms for therapeutic applications must overcome barriers to reach target cells effectively. Despite these challenges, CRISPR's continued evolution through base editing, prime editing, and epigenome editing techniques promises to further expand its therapeutic and research applications, potentially addressing previously intractable genetic diseases while raising new questions about the boundaries of human enhancement.",
+  "wordCount": 283,
+  "idealWPM": 300,
+  "estimatedReadingTime": 57,
+  "questions": [
+    {
+      "id": "q1",
+      "stem": "What was CRISPR originally discovered as?",
+      "options": [
+        "A laboratory-created gene editing tool",
+        "An adaptive immune system in bacteria and archaea",
+        "A protein synthesis mechanism",
+        "A DNA replication system"
+      ],
+      "answer": "An adaptive immune system in bacteria and archaea"
+    },
+    {
+      "id": "q2",
+      "stem": "What are the two key components of the CRISPR-Cas9 system?",
+      "options": [
+        "DNA polymerase and RNA primers",
+        "Guide RNA and Cas9 enzyme",
+        "Promoters and enhancers",
+        "Histones and nucleosomes"
+      ],
+      "answer": "Guide RNA and Cas9 enzyme"
+    },
+    {
+      "id": "q3",
+      "stem": "Who are primarily credited with the breakthrough development of CRISPR technology?",
+      "options": [
+        "Watson and Crick",
+        "Jennifer Doudna and Emmanuelle Charpentier",
+        "Rosalind Franklin and Maurice Wilkins",
+        "Barbara McClintock and Martha Chase"
+      ],
+      "answer": "Jennifer Doudna and Emmanuelle Charpentier"
+    },
+    {
+      "id": "q4",
+      "stem": "What is germline editing?",
+      "options": [
+        "Editing genes in adult tissues only",
+        "Creating temporary genetic modifications",
+        "Making heritable genetic changes that can be passed to offspring",
+        "Editing genes only in laboratory cultures"
+      ],
+      "answer": "Making heritable genetic changes that can be passed to offspring"
+    },
+    {
+      "id": "q5",
+      "stem": "What is one major technical challenge mentioned for CRISPR technology?",
+      "options": [
+        "The system works too slowly",
+        "Off-target effects where unintended genomic locations are modified",
+        "It only works in bacterial cells",
+        "The guide RNA degrades too quickly"
+      ],
+      "answer": "Off-target effects where unintended genomic locations are modified"
+    },
+    {
+      "id": "q6",
+      "stem": "What advantage does CRISPR offer in agriculture compared to traditional GMOs?",
+      "options": [
+        "It's much cheaper to implement",
+        "It works faster than traditional methods",
+        "It can enhance crops without introducing foreign genes",
+        "It doesn't require regulatory approval"
+      ],
+      "answer": "It can enhance crops without introducing foreign genes"
+    }
+  ]
+}
