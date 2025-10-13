@@ -61,7 +61,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
       setError(null);
       try {
         // First, extract transcript
-        const extractRes = await fetch("/api/extract", {
+        const extractRes = await fetch("/api/yt-study/extract", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
@@ -84,7 +84,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
             // Mark summarization as in-progress
             setFetchingSummary(true);
             // Don't await this - let it run in background
-            fetch("/api/summarize", {
+            fetch("/api/yt-study/summarize", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({

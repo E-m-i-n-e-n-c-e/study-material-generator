@@ -13,7 +13,7 @@
 GET {{baseUrl}}/
 
 ### Extract transcript only
-POST {{baseUrl}}/api/extract
+POST {{baseUrl}}/api/yt-study/extract
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 ### Generate study material only (requires transcript from previous extract)
 # 1) Run the Extract request above, copy videoId and transcript array from the response.
 # 2) Paste them below to test summarize directly.
-POST {{baseUrl}}/api/summarize
+POST {{baseUrl}}/api/yt-study/summarize
 Content-Type: application/json
 
 {
@@ -46,26 +46,61 @@ Content-Type: application/json
 }
 
 ### Negative test: invalid URL
-POST {{baseUrl}}/api/extract
+POST {{baseUrl}}/api/yt-study/extract
 Content-Type: application/json
 
 {
   "url": "https://www.youtube.com/watch?v=SquU4Bpc73Y"
 }
 
-### Negative test: missing url in /api/process
-POST {{baseUrl}}/api/process
-Content-Type: application/json
-
-{
-}
 
 
 ### Generate PDF from Markdown
-POST {{baseUrl}}/api/pdf
+POST {{baseUrl}}/api/yt-study/pdf
 Content-Type: application/json
 
 {
   "markdown": "# Demo Notes\n\n- Point A\n- Point B\n\n**Bold test**",
   "filename": "demo-notes"
+}
+### Example: Set OpenAI API key secret in Fly.io
+# Run this command in your terminal (not in this HTTP file) to set the OpenAI API key as a secret in your Fly.io app:
+#
+# flyctl secrets set OPENROUTER_API_KEY=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
+//
+// Replace OPENAI_API_KEY with the appropriate environment variable name if your backend expects a different one.
+
+### Submit reading answers (hard-01)
+POST {{baseUrl}}/api/reading/submit
+Content-Type: application/json
+
+{
+    "passageId": "hard-01",
+    "readingTimeSeconds": 90,
+    "answers": [
+        {
+            "questionId": "q1",
+            "selectedOption": "Qubits can exist in superposition, representing multiple states simultaneously"
+        },
+        {
+            "questionId": "q2", 
+            "selectedOption": "Richard Feynman"
+        },
+        {
+            "questionId": "q3",
+            "selectedOption": "The tendency of qubits to lose their quantum properties when interacting with their environment"
+        },
+        {
+            "questionId": "q4",
+            "selectedOption": "Photonic crystals"
+        },
+        {
+            "questionId": "q5",
+            "selectedOption": "Temperatures near absolute zero"
+        },
+        {
+            "questionId": "q6",
+            "selectedOption": "Qubits to become correlated such that one instantaneously influences another"
+        }
+    ]
 }

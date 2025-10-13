@@ -63,7 +63,7 @@ export default function EditorPage() {
     setExporting(true);
     try {
       const name = videoId ? `summary-${videoId}` : "editor-notes";
-      const res = await fetch("/api/pdf", {
+      const res = await fetch("/api/yt-study/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ markdown, filename: name })
