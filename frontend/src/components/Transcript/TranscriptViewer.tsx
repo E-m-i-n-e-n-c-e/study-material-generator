@@ -200,7 +200,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
             {fetchingSummary && (
               <div className="flex items-center gap-2 text-blue-600 text-sm">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-500"></div>
-                <span>Generating study material...</span>
+                <span>Generating Summary...</span>
               </div>
             )}
             <button
@@ -217,11 +217,11 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
               className="inline-flex items-center rounded-md bg-black px-3 py-2 text-white text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               title={
                 !segments?.length ? "Load transcript first" : 
-                fetchingSummary ? "Study material is being generated..." : 
-                "View Study Material"
+                fetchingSummary ? "Summary is being generated..." : 
+                "View Summary"
               }
             >
-              View Study Material
+              View Summary
             </button>
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function TranscriptViewer({ videoId: initialVideoId, url }: Props
               <div className="mb-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm">
                 <div className="flex items-center gap-2 text-green-700">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="font-medium">Study material ready!</span>
+                  <span className="font-medium">Summary ready!</span>
                 </div>
               </div>
             )}

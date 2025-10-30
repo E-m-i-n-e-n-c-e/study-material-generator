@@ -16,6 +16,10 @@ const allowedOrigins = [
   'http://localhost:5173',              // Vite dev server
   'https://ai-study-mentor.vercel.app',  // Production site (no trailing slash)
   'https://platform.theblinkgrid.com',  // Optional: www variant (no trailing slash)
+  'https://ai-study-mentor.vercel.app/',               // Production site
+  'https://platform.theblinkgrid.com/',           // Optional: www variant
+  'https://transcript-processor-beta.vercel.app/',
+  'https://transcript-processor-8pcaxcji6-e-m-i-n-e-n-c-es-projects.vercel.app/',
 ];
 
 // More permissive CORS configuration for debugging
@@ -63,7 +67,7 @@ const corsOptions: cors.CorsOptions = {
   optionsSuccessStatus: 200
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(express.json());
 
 // Add debugging middleware

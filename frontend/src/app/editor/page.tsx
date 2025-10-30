@@ -98,7 +98,7 @@ export default function EditorPage() {
         <section className="py-8">
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-4 flex items-center justify-between">
-              <h1 className="text-2xl font-semibold">Study Material Editor</h1>
+              <h1 className="text-2xl font-semibold">Summary Editor</h1>
               <div className="flex gap-2">
                 <button onClick={() => setPreview((v) => !v)} className="text-xs rounded-md border px-2 py-1">
                   {preview ? "Switch to Edit" : "Preview"}
